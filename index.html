@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>윷놀이 v77.4 메뉴분리 AI 테스트</title>
+<title>윷놀이 v78 멀티 정리판</title>
 <style>
 *{box-sizing:border-box}
 body{
@@ -3214,7 +3214,7 @@ body.mobile .seatIntroRow.me{font-size:22px}
 
 
 
-/* v77.2 AI test: mobile one-screen layout + floating chat renewal */
+/* v78: mobile one-screen layout + floating chat renewal */
 @media (max-width: 860px), (pointer: coarse){
   html, body{height:100dvh !important; overflow:hidden !important; overscroll-behavior:none !important;}
   body.mobile{background:#efe1c8 !important;}
@@ -3530,7 +3530,7 @@ body.mobile .v772RollStage .stick{width:28px;height:62px;}
     <div id="v774Landing" class="v774Landing">
       <div class="v774LogoBlock">
         <div class="v774GameTitle">윷놀이</div>
-        <div class="v774Sub">v77.4 메뉴분리 AI 테스트</div>
+        <div class="v774Sub">v78 멀티 정리판</div>
       </div>
       <button id="v774SingleBtn" class="v774BigChoice" type="button">싱글플레이</button>
       <button id="v774MultiBtn" class="v774BigChoice" type="button">멀티플레이</button>
@@ -3563,8 +3563,8 @@ body.mobile .v772RollStage .stick{width:28px;height:62px;}
 
       <div id="v774MultiOnly" class="v774MultiOnly hidden">
         <div class="mpBox">
-          <h2>친구랑 같이 하기 v77.4 메뉴분리 AI 테스트</h2>
-          <div class="small">Worker를 넣으면 멀티, 안 넣어도 AI 테스트는 가능. 1인 시작도 허용.</div>
+          <h2>친구랑 같이 하기 v78 멀티 정리판</h2>
+          <div class="small">Worker 주소 필수. 방 만들기/참가 후 방장이 게임을 시작합니다.</div>
           <input id="mpServerUrl" class="mpInput" placeholder="Cloudflare Worker 주소">
           <div class="row v774MpInputs">
             <input id="mpName" class="mpInput" placeholder="닉네임">
@@ -3575,7 +3575,7 @@ body.mobile .v772RollStage .stick{width:28px;height:62px;}
             <button id="mpJoinBtn" class="mpBtn" type="button">방 참가</button>
             <button id="mpCopyBtn" class="mpBtn" type="button">초대 링크</button>
           </div>
-          <div id="mpStatus" class="mpStatus">오프라인: AI 테스트 가능 · 1인 시작 가능</div>
+          <div id="mpStatus" class="mpStatus">오프라인: Worker 주소를 넣고 방을 만들거나 참가하세요</div>
           <div id="mpPlayers" class="mpPlayers"></div>
         </div>
       </div>
@@ -9439,19 +9439,17 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
 
 
 
-/* v77.2 AI test build: local AI room, durable roll overlay, chat renewal, anti-spam action guard */
+/* v78 clean multiplayer build: durable roll overlay, chat renewal, anti-spam action guard */
 (function(){
   "use strict";
-  try{ document.title = "윷놀이 v77.2 AI 테스트"; }catch(e){}
-  window.YUTNORI_VERSION = "v77.4-menu-split-ai-test";
+  try{ document.title = "윷놀이 v78 멀티 정리판"; }catch(e){}
+  window.YUTNORI_VERSION = "v78-multiplayer-clean";
 
   const V772 = window.V772 = window.V772 || {
     moveBusy:false,
     rollBusy:false,
     unread:0,
-    aiChatCountdown:3 + Math.floor(Math.random()*3),
     actionSeq:0,
-    localAiRoom:false,
     chatOpen:false
   };
 
@@ -9460,17 +9458,17 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
   function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
   function nowId(){ return Date.now() + "-" + (++V772.actionSeq); }
   function currentNick(){ return safeText(q("mpName") && q("mpName").value) || (MP && MP.name) || "1P"; }
-  function isAiTeam(team){ return !!(game && game.v772AiTest && Number(team) === 1); }
+  function isAiTeam(team){ return false; }
 
   function v772InstallVersionLabel(){
     try{
       document.querySelectorAll("h2").forEach(h=>{
-        if(/친구랑 같이 하기/i.test(h.textContent || "")) h.textContent = "친구랑 같이 하기 v77.4 메뉴분리 AI 테스트";
+        if(/친구랑 같이 하기/i.test(h.textContent || "")) h.textContent = "친구랑 같이 하기 v78 멀티 정리판";
       });
       const status = q("mpStatus");
       if(status && !MP.connected && !status.dataset.v772){
         status.dataset.v772 = "1";
-        status.textContent = "오프라인: AI 테스트 가능 · Worker 없어도 1인 시작 가능";
+        status.textContent = "오프라인: Worker 주소를 넣고 방을 만들거나 참가하세요";
       }
     }catch(e){}
   }
@@ -9557,28 +9555,9 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
     v772PushChat({type:"system", text}, {countBadge:false});
   }
 
-  function v772AiSay(text){
-    v772PushChat({type:"ai", name:"AI", seat:1, text, clientId:"AI"}, {countBadge:true});
-  }
+  function v772AiSay(text){ return; }
 
-  function v772MaybeAiChatter(context){
-    if(!game || !game.v772AiTest) return;
-    V772.aiChatCountdown--;
-    if(V772.aiChatCountdown > 0) return;
-    V772.aiChatCountdown = 3 + Math.floor(Math.random()*3);
-    const lines = [
-      "제가 계산상 이기는 그림입니다. 계산이 틀리면 기계 탓은 하지 마시고요.",
-      "음, 방금 수는 인간 기준으론 낭만이고 제 기준으론 빈틈입니다.",
-      "AI라서 감정은 없는데요, 방금은 조금 웃겼습니다.",
-      "천천히 하시죠. 저는 도망 안 갑니다. 말은 도망갑니다만.",
-      "이 판은 아직 모릅니다. 그래서 더 재밌는 척을 해보겠습니다.",
-      "전략적으로 움직이는 중입니다. 랜덤처럼 보이면 인간의 한계입니다."
-    ];
-    if(context === "nak") lines.push("낙이요? 운이 아니라 예능감입니다.");
-    if(context === "capture") lines.push("방금 잡은 건 기록으로 남겨두겠습니다. 예의상요.");
-    if(context === "bonus") lines.push("한 번 더? 슬슬 분위기 이상해지는데요.");
-    v772AiSay(pick(lines));
-  }
+  function v772MaybeAiChatter(context){ return; }
 
   function v772RollTaunt(team, name){
     const who = (game && game.teams && game.teams[team] && game.teams[team].name) || `${Number(team)+1}P`;
@@ -9650,17 +9629,17 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
     }
   }
 
-  // Chat render renewal. System/AI/user messages render differently, badge count ignores system messages.
+  // Chat render renewal. System/user messages render differently, badge count ignores system messages.
   window.mpChatRender = function(){
     v772EnsureChat();
     const box = q("mpChatBox"), log = q("mpChatLog"), title = q("mpChatTitle");
     if(!box || !log) return;
-    if(title) title.textContent = MP && MP.room ? `방 채팅 · ${MP.room}` : "AI 테스트 채팅";
+    if(title) title.textContent = MP && MP.room ? `방 채팅 · ${MP.room}` : "방 채팅";
     const msgs = (MP && Array.isArray(MP.chat) ? MP.chat : []).slice(-80);
     log.innerHTML = msgs.map(m=>{
       const type = m.type || "user";
       const cls = type === "system" ? " system" : type === "ai" ? " ai" : (m.mine || (MP && m.clientId && m.clientId === MP.clientId)) ? " mine" : "";
-      const meta = type === "system" ? "" : `<div class="meta">${escapeHtml(m.name || (type === "ai" ? "AI" : "익명"))}</div>`;
+      const meta = type === "system" ? "" : `<div class="meta">${escapeHtml(m.name || (type === "ai" ? "봇" : "익명"))}</div>`;
       return `<div class="mpChatMsg${cls}">${meta}<div>${escapeHtml(m.text || "")}</div></div>`;
     }).join("");
     log.scrollTop = log.scrollHeight;
@@ -9671,10 +9650,8 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
     if(!text) return;
     const msg = {type:"user", name:currentNick(), seat:0, clientId:MP.clientId || "ME", mine:true, text, at:Date.now()};
     v772PushChat(msg, {countBadge:false});
-    if(MP && MP.ws && MP.ws.readyState === WebSocket.OPEN && MP.connected && !MP.localAiRoom){
+    if(MP && MP.ws && MP.ws.readyState === WebSocket.OPEN && MP.connected){
       try{ MP.ws.send(JSON.stringify({type:"chat", room:MP.room, name:MP.name || currentNick(), clientId:MP.clientId, text})); }catch(e){}
-    }else if(game && game.v772AiTest && Math.random() < .45){
-      setTimeout(()=>v772AiSay(pick(["읽었습니다. 반박은 말로 하지 말고 말로 하세요. 윷말이요.", "채팅 좋고요. 이제 판 위에서도 보여주시죠.", "심리전 접수했습니다. 효과는 아직 미미합니다.", "그 멘트는 저장해두겠습니다. 나중에 잡으면 써먹게요."])), 550 + Math.random()*900);
     }
   };
 
@@ -9692,44 +9669,17 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
     }
   }
 
-  // Worker-less local AI room. Worker URL can still be used; empty URL becomes local AI test room.
+  // v78: real Worker multiplayer only. Empty Worker URL is rejected.
   const oldMpConnect = typeof mpConnect === "function" ? mpConnect : null;
   window.mpConnect = function(room, create){
     const serverUrl = mpNormalizeServerUrl(q("mpServerUrl")?.value || "");
-    const name = currentNick();
-    room = String(room || "").trim().toUpperCase() || mpRandomRoom();
-    if(serverUrl && oldMpConnect){
-      return oldMpConnect(room, create);
-    }
-    try{ localStorage.setItem("yutnoriMpNameV62", name); }catch(e){}
-    MP.ws = null;
-    MP.connected = false;
-    MP.localAiRoom = true;
-    MP.room = room;
-    MP.name = name;
-    MP.serverUrl = "";
-    MP.seat = 0;
-    MP.host = true;
-    MP.started = false;
-    MP.players = [{seat:0, name, clientId:MP.clientId || "ME"}, {seat:1, name:"AI", clientId:"AI", ai:true}];
-    document.body.classList.add("multiplayer");
-    const badge = q("mpRoomBadge");
-    if(badge) badge.textContent = `MULTI ${room} · AI 테스트`;
-    mpSetStatus(`${room} 로컬 AI 테스트 방 · 1인 시작 가능`);
-    v772EnsureChat();
-    v772System(`AI 테스트 방 ${room} 생성. 상대는 AI입니다.`);
-    try{ mpChatRender(); }catch(e){}
-    return true;
-  };
-
-  window.mpCanStartGame = function(show=false){ return true; };
-  window.mpCanControlCurrentTurn = function(show=false){
-    if(!game || !game.v772AiTest) return true;
-    if(game.turn === 1){
-      if(show) showEventToast("AI 차례입니다. 잠깐 기다리면 알아서 둡니다.");
+    if(!serverUrl){
+      const msg = "Worker 주소를 먼저 넣어야 멀티 연결됩니다.";
+      try{ mpSetStatus(msg); }catch(e){}
+      try{ showEventToast(msg); }catch(e){}
       return false;
     }
-    return true;
+    return oldMpConnect ? oldMpConnect(room, create) : false;
   };
 
   function v772RebindButton(id, handler){
@@ -9744,57 +9694,7 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
   window.render = function(){
     const out = oldRender ? oldRender.apply(this, arguments) : undefined;
     v772EnsureChat();
-    if(game && game.v772AiTest && game.turn === 1 && !rolling && !game.over){
-      setTimeout(()=>{ if(game && game.v772AiTest && game.turn === 1 && !rolling && !game.over) runAutoLoop(); }, 650);
-    }
     return out;
-  };
-
-  window.startGame = function(){
-    try{ localStorage.removeItem("yutnoriSaveV32"); }catch(e){}
-    const perPlayer = Math.max(1, Math.min(6, parseInt(q("pieceCount")?.value || "2", 10)));
-    const nick = currentNick();
-    const room = safeText(q("mpRoomCode")?.value || MP.room || "AITEST").toUpperCase() || "AITEST";
-    if(!MP.room){
-      MP.room = room;
-      MP.name = nick;
-      MP.localAiRoom = true;
-      MP.seat = 0;
-      MP.players = [{seat:0, name:nick, clientId:MP.clientId || "ME"}, {seat:1, name:"AI", clientId:"AI", ai:true}];
-      document.body.classList.add("multiplayer");
-    }
-    const teams = [
-      {name:nick || "1P", players:[nick || "1P"], color:COLORS[0]},
-      {name:"AI", players:["AI"], color:COLORS[1]}
-    ];
-    let pieces = [];
-    teams.forEach((t, ti)=>{
-      for(let i=0;i<perPlayer;i++) pieces.push({id:`T${ti}M${i}`, team:ti, index:i+1, pos:null, finished:false});
-    });
-    game = {
-      teams, pieces, turn:0, rollCharges:1, cards:[], log:[], winner:null, ranks:[], rankedTeams:{}, over:false,
-      autoRunning:false, teamAuto:{0:false,1:true}, baekdoStickIndex:Math.floor(Math.random()*4), mode:"ai-test", v772AiTest:true
-    };
-    selectedPieceId = null;
-    selectedCardIndex = null;
-    selectedMoveDest = undefined;
-    rolling = false;
-    q("menu")?.classList.add("hidden");
-    q("game")?.classList.remove("hidden");
-    v772SetGameActive(true);
-    const badge = q("mpRoomBadge");
-    if(badge) badge.textContent = `MULTI ${MP.room || room} · ${nick || "1P"} vs AI`;
-    const rb = q("rollBtn"); if(rb) rb.onclick = roll;
-    const ab = q("autoBtn"); if(ab) ab.onclick = toggleAutoPlay;
-    fitGameToScreen();
-    detectDevice();
-    renderYut(null, false);
-    relocateYutAreaForDevice();
-    addLog("AI 테스트 게임 시작");
-    addLog(`백도윷: ${ensureBaekdoStickIndex() + 1}번 윷가락`);
-    v772System(`${nick || "1P"} vs AI 시작. AI는 상대 플레이어처럼 자동 진행합니다.`);
-    render();
-    showTurnToast(game.turn);
   };
 
   window.roll = function(){
@@ -9887,7 +9787,6 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
         game.__v772FastUntil = Date.now() + 1200;
         v772CaptureTaunt(V772.lastCapture.moverTeam, V772.lastCapture.count, V772.lastCapture);
       }
-      if(isAiTeam(beforeTeam)) v772MaybeAiChatter(V772.lastCapture ? "capture" : "move");
       return r;
     }finally{
       setTimeout(()=>{ V772.moveBusy = false; }, 120);
@@ -9922,7 +9821,6 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
   window.autoPlayOnce = async function(){
     if(!game || game.over || rolling || isTeamRanked(game.turn)) return false;
     if(game.rollCharges > 0){
-      if(isAiTeam(game.turn)) v772MaybeAiChatter("roll");
       await sleep(autoDelay(180));
       roll();
       return true;
@@ -10001,8 +9899,8 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
 /* v77.4: mobile first menu split. 기존 긴 로비를 싱글/멀티 첫 선택으로 분리. */
 (function(){
   try{
-    document.title = "윷놀이 v77.4 메뉴분리 AI 테스트";
-    window.YUTNORI_VERSION = "v77.4-menu-split-ai-test";
+    document.title = "윷놀이 v78 멀티 정리판";
+    window.YUTNORI_VERSION = "v78-multiplayer-clean";
   }catch(e){}
 
   function q(s){ return document.querySelector(s); }
@@ -10040,7 +9938,7 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
       show(multiOnly);
       if(title) title.textContent = "멀티플레이";
       if(sub) sub.textContent = "모드 선택, Worker 주소, 방 코드, 닉네임을 여기서 처리.";
-      if(start) start.textContent = "AI 테스트/멀티 시작";
+      if(start) start.textContent = "멀티 게임 시작";
     }else{
       hide(multiOnly);
       if(title) title.textContent = "싱글플레이";
@@ -10089,8 +9987,8 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
    새로고침 연타/저장상태 꼬임으로 menu와 game이 동시에 숨는 상황을 강제로 복구한다. */
 (function(){
   try{
-    document.title = "윷놀이 v77.4 메뉴분리 AI 테스트";
-    window.YUTNORI_VERSION = "v77.4-menu-split-ai-test";
+    document.title = "윷놀이 v78 멀티 정리판";
+    window.YUTNORI_VERSION = "v78-multiplayer-clean";
   }catch(e){}
 
   function hasResetParam(){
@@ -10160,12 +10058,12 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
   function ensureVersionLabel(){
     const box = document.querySelector(".mpBox h2");
     if(box && !/v77\.3/.test(box.textContent)){
-      box.textContent = "친구랑 같이 하기 v77.4 메뉴분리 AI 테스트";
+      box.textContent = "친구랑 같이 하기 v78 멀티 정리판";
     }
     const status = document.getElementById("mpStatus");
     if(status && !status.dataset.v773Touched){
       status.dataset.v773Touched = "1";
-      status.textContent = "오프라인: AI 테스트 가능 · 1인 시작 가능 · 안전부팅 적용";
+      status.textContent = "오프라인: Worker 주소를 넣고 방을 만들거나 참가하세요";
     }
   }
 
@@ -10221,6 +10119,92 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
     setTimeout(safeBootCheck, 1200);
   });
   setTimeout(safeBootCheck, 1800);
+})();
+</script>
+
+
+<script>
+/* v78: remove test bot mode and harden real multiplayer menu. */
+(function(){
+  "use strict";
+  try{
+    document.title = "윷놀이 v78 멀티 정리판";
+    window.YUTNORI_VERSION = "v78-multiplayer-clean";
+  }catch(e){}
+
+  function q(s){ return document.querySelector(s); }
+  function qa(s){ return Array.from(document.querySelectorAll(s)); }
+  function txt(el, value){ if(el) el.textContent = value; }
+  function workerReady(){
+    try{ return !!(window.MP && MP.connected && MP.ws && MP.ws.readyState === WebSocket.OPEN); }catch(e){ return false; }
+  }
+  function inMultiPanel(){ return document.body && document.body.dataset && document.body.dataset.v774MenuMode === "multi"; }
+  function status(msg){ try{ if(typeof mpSetStatus === "function") mpSetStatus(msg); }catch(e){} try{ if(typeof showEventToast === "function") showEventToast(msg); }catch(e){} }
+
+  window.v78ApplyLabels = function(){
+    txt(q(".v774Sub"), "v78 멀티 정리판");
+    qa(".mpBox h2").forEach(h=>txt(h,"친구랑 같이 하기 v78 멀티 정리판"));
+    const small = q(".v774MultiOnly .mpBox .small");
+    txt(small, "Worker 주소 필수. 방 만들기/참가 후 방장이 게임을 시작합니다.");
+    const st = q("#mpStatus");
+    if(st && (!window.MP || !MP.connected)) txt(st,"오프라인: Worker 주소를 넣고 방을 만들거나 참가하세요");
+    const start = q("#startBtn");
+    if(start && inMultiPanel()) start.textContent = "멀티 게임 시작";
+  };
+
+  const oldOpen = window.v774OpenMenuPanel;
+  window.v774OpenMenuPanel = function(kind){
+    if(typeof oldOpen === "function") oldOpen(kind);
+    window.v78ApplyLabels();
+    const start = q("#startBtn");
+    if(start && kind === "multi") start.textContent = "멀티 게임 시작";
+  };
+
+  const oldStart = window.startGame;
+  window.startGame = function(){
+    if(inMultiPanel()){
+      if(!window.MP || !MP.connected){
+        status("멀티는 Worker 연결 후 시작할 수 있습니다. 방 만들기/참가 먼저 하세요.");
+        return;
+      }
+    }
+    if(game && game.v78NoLocalTest){ delete game.v78NoLocalTest; }
+    return oldStart ? oldStart.apply(this, arguments) : undefined;
+  };
+
+  // Start button listener can be cloned by older patches, so bind one last time.
+  function bindStart(){
+    const old = q("#startBtn");
+    if(!old || old.dataset.v78Bound === "1") { window.v78ApplyLabels(); return; }
+    const fresh = old.cloneNode(true);
+    fresh.dataset.v78Bound = "1";
+    old.parentNode.replaceChild(fresh, old);
+    fresh.addEventListener("click", function(e){
+      e.preventDefault();
+      window.startGame();
+    });
+    window.v78ApplyLabels();
+  }
+
+  // Real multiplayer only: empty Worker URL is rejected.
+  const oldConnect = window.mpConnect;
+  window.mpConnect = function(room, create){
+    const input = q("#mpServerUrl");
+    const url = input ? String(input.value || "").trim() : "";
+    if(!url){ status("Worker 주소를 먼저 넣어야 멀티 연결됩니다."); return false; }
+    return oldConnect ? oldConnect.apply(this, arguments) : false;
+  };
+
+  // No local test-room leftovers.
+  const oldRender = window.render;
+  window.render = function(){
+    if(game && game.v78NoLocalTest) delete game.v78NoLocalTest;
+    return oldRender ? oldRender.apply(this, arguments) : undefined;
+  };
+
+  window.addEventListener("DOMContentLoaded", function(){ setTimeout(bindStart,0); setTimeout(window.v78ApplyLabels,80); });
+  setTimeout(bindStart, 0);
+  setTimeout(window.v78ApplyLabels, 250);
 })();
 </script>
 
