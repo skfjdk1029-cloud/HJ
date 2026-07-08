@@ -1,9 +1,10 @@
+
 <!doctype html>
 <html lang="ko">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>윷놀이 v77.3 AI 테스트 안전부팅</title>
+<title>윷놀이 v77.4 메뉴분리 AI 테스트</title>
 <style>
 *{box-sizing:border-box}
 body{
@@ -3450,50 +3451,135 @@ body.mobile .v772RollTitle{font-size:18px;}
 body.mobile .v772RollResult{font-size:25px;}
 body.mobile .v772RollStage .stick{width:28px;height:62px;}
 
+
+
+/* v77.4: first menu split for mobile sanity */
+.v774MenuScreen{padding:12px;align-items:center;justify-content:center;background:#f6f1e7;overflow:hidden;}
+.v774MenuCard{width:min(560px,96vw);min-height:auto;padding:18px;border-radius:24px;display:flex;flex-direction:column;gap:12px;}
+.v774Landing{min-height:min(680px,calc(100dvh - 48px));display:grid;grid-template-rows:auto 1fr 1fr;gap:22px;align-items:stretch;}
+.v774LogoBlock{text-align:center;padding:4px 0 2px;}
+.v774GameTitle{font-size:34px;font-weight:1000;letter-spacing:-1px;color:#2f241f;}
+.v774Sub{font-size:13px;font-weight:800;opacity:.66;margin-top:4px;}
+.v774BigChoice{width:100%;min-height:150px;border:4px solid #111;border-radius:32px;background:#f4e8b0;font-size:34px;font-weight:400;text-decoration:underline;text-underline-offset:5px;box-shadow:none;color:#111;}
+.v774BigChoice:active{transform:scale(.985);background:#eadc9c;}
+.v774ModePanel{display:flex;flex-direction:column;gap:10px;min-height:min(720px,calc(100dvh - 42px));}
+.v774ModePanel.hidden,.v774Landing.hidden,.v774MultiOnly.hidden{display:none!important;}
+.v774PanelTop{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;}
+.v774PanelTop h1{font-size:27px;margin:0;letter-spacing:-1px;}
+.v774BackBtn{border-radius:999px;padding:8px 11px;font-weight:900;background:#fff7e6;}
+.v774SectionTitle{margin:4px 0 0;font-size:16px;}
+.v774ModeGrid{display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important;}
+.v774ModeGrid .modeBtn{min-height:48px;font-weight:900;border-radius:14px;padding:8px 6px;}
+.v774PieceRow{display:flex;align-items:center;gap:8px;padding:9px 10px;border:2px solid #3b302a;border-radius:14px;background:#fffdf8;font-weight:900;}
+.v774PieceRow input{width:68px;padding:7px 8px;border-radius:10px;border:1px solid #3b302a;text-align:center;font-weight:900;}
+.v774StartBtn{margin-top:0;padding:13px;border-radius:16px;font-size:18px;}
+.v774MultiOnly{min-height:0;}
+.v774MultiOnly .mpBox{margin-top:0;border-radius:16px;padding:10px;}
+.v774MultiOnly .mpBox h2{font-size:16px;margin:0 0 4px;}
+.v774MultiOnly .mpBox .small{font-size:12px;line-height:1.25;margin-bottom:6px;}
+.v774MultiOnly .mpInput{width:100%;min-width:0;padding:9px 10px;border-radius:12px;font-size:14px;}
+.v774MpInputs{display:grid!important;grid-template-columns:1fr 1fr;gap:7px!important;}
+.v774MpButtons{display:grid!important;grid-template-columns:1fr 1fr 1fr;gap:7px!important;}
+.v774MpButtons .mpBtn{padding:9px 5px;border-radius:12px;font-size:13px;font-weight:900;}
+.v774MultiOnly .mpStatus{font-size:12px;line-height:1.28;margin-top:7px;max-height:38px;overflow:hidden;}
+.v774MultiOnly .mpPlayers{font-size:12px;line-height:1.25;max-height:48px;overflow:auto;}
+@media(max-width:860px),(pointer:coarse){
+  body.mobile #menu.screen,.v774MenuScreen{height:100dvh!important;min-height:100dvh!important;padding:8px!important;overflow:hidden!important;align-items:stretch!important;justify-content:center!important;}
+  body.mobile .v774MenuCard{width:100%!important;max-width:none!important;height:calc(100dvh - 16px)!important;max-height:calc(100dvh - 16px)!important;padding:12px!important;border-width:2px!important;border-radius:20px!important;overflow:hidden!important;}
+  body.mobile .v774Landing{height:100%;min-height:0;grid-template-rows:auto 1fr 1fr;gap:16px;}
+  body.mobile .v774GameTitle{font-size:30px;}
+  body.mobile .v774BigChoice{min-height:0;height:100%;font-size:30px;border-radius:30px;border-width:3px;}
+  body.mobile .v774ModePanel{height:100%;min-height:0;gap:7px;overflow:hidden;}
+  body.mobile .v774PanelTop{gap:8px;}
+  body.mobile .v774PanelTop h1{font-size:23px;}
+  body.mobile .v774PanelTop .small{font-size:11px;line-height:1.18;}
+  body.mobile .v774BackBtn{padding:7px 9px;font-size:13px;}
+  body.mobile .v774SectionTitle{font-size:14px;}
+  body.mobile .v774ModeGrid{gap:6px!important;}
+  body.mobile .v774ModeGrid .modeBtn{min-height:41px;font-size:14px;padding:6px 4px;border-radius:12px;}
+  body.mobile .v774PieceRow{padding:7px 9px;font-size:14px;}
+  body.mobile .v774PieceRow input{padding:5px 6px;width:58px;}
+  body.mobile .v774StartBtn{padding:10px;font-size:16px;border-radius:14px;}
+  body.mobile .v774MultiOnly .mpBox{padding:8px;border-width:2px;}
+  body.mobile .v774MultiOnly .mpBox h2{font-size:14px;}
+  body.mobile .v774MultiOnly .mpBox .small{font-size:10.5px;line-height:1.12;}
+  body.mobile .v774MultiOnly .mpInput{padding:7px 8px;font-size:13px;}
+  body.mobile .v774MpInputs{gap:5px!important;}
+  body.mobile .v774MpButtons{gap:5px!important;}
+  body.mobile .v774MpButtons .mpBtn{font-size:12px;padding:7px 3px;}
+  body.mobile .v774MultiOnly .mpStatus{font-size:10.5px;max-height:30px;}
+  body.mobile .v774MultiOnly .mpPlayers{font-size:10.5px;max-height:32px;}
+}
+@media(max-height:650px){
+  body.mobile .v774Sub{display:none;}
+  body.mobile .v774Landing{gap:10px;}
+  body.mobile .v774BigChoice{font-size:27px;border-radius:24px;}
+  body.mobile .v774PanelTop .small{display:none;}
+  body.mobile .v774ModePanel{gap:5px;}
+  body.mobile .v774ModeGrid .modeBtn{min-height:36px;font-size:13px;}
+  body.mobile .v774PieceRow{padding:5px 8px;}
+  body.mobile .v774StartBtn{padding:8px;}
+}
+
 </style>
 </head>
 <body>
 
-<div id="menu" class="screen">
-  <div class="card">
-    <h1>윷놀이</h1>
-    <div class="small">충전식 던지기/이동 카드 방식. 막대기 네 개도 이제 UI가 필요하다니 대단한 시대다.</div>
-
-    <h2>게임 모드</h2>
-    <div class="row">
-      <button class="modeBtn active" data-mode="team">2v2 팀전</button>
-      <button class="modeBtn" data-mode="solo2">개인전 2인</button>
-      <button class="modeBtn" data-mode="solo3">개인전 3인</button>
-      <button class="modeBtn" data-mode="solo4">개인전 4인</button>
-    </div>
-
-    <h2>인당 말 개수</h2>
-    <div class="row">
-      <input id="pieceCount" type="number" min="1" max="6" value="4" style="width:90px;padding:9px;border-radius:10px;border:1px solid #3b302a">
-      <span class="small">1~6개 권장</span>
-    </div>
-
-    <button id="startBtn" class="startBtn">게임 시작</button>
-
-
-    <div class="mpBox">
-      <h2>친구랑 같이 하기 v77.3 AI 테스트 안전부팅</h2>
-      <div class="small">GitHub Pages는 화면, Worker는 실시간 멀티/채팅을 맡는다. 게임 시작 시 접속자 순서를 랜덤 배정한다.</div>
-      <input id="mpServerUrl" class="mpInput" placeholder="Cloudflare Worker 주소 예: https://yutnori-multi.아이디.workers.dev">
-      <div class="row">
-        <input id="mpName" class="mpInput" placeholder="내 이름" style="flex:1;min-width:120px">
-        <input id="mpRoomCode" class="mpInput" placeholder="방 코드" maxlength="8" style="flex:1;min-width:100px;text-transform:uppercase">
+<div id="menu" class="screen v774MenuScreen">
+  <div class="card v774MenuCard">
+    <div id="v774Landing" class="v774Landing">
+      <div class="v774LogoBlock">
+        <div class="v774GameTitle">윷놀이</div>
+        <div class="v774Sub">v77.4 메뉴분리 AI 테스트</div>
       </div>
-      <div class="row">
-        <button id="mpCreateBtn" class="mpBtn primary">방 만들기</button>
-        <button id="mpJoinBtn" class="mpBtn">방 참가</button>
-        <button id="mpCopyBtn" class="mpBtn">초대 링크 복사</button>
-      </div>
-      <div id="mpStatus" class="mpStatus">오프라인: AI 테스트 가능 · 1인 시작 가능</div>
-      <div id="mpPlayers" class="mpPlayers"></div>
+      <button id="v774SingleBtn" class="v774BigChoice" type="button">싱글플레이</button>
+      <button id="v774MultiBtn" class="v774BigChoice" type="button">멀티플레이</button>
     </div>
 
+    <div id="v774ModePanel" class="v774ModePanel hidden">
+      <div class="v774PanelTop">
+        <button id="v774BackBtn" class="v774BackBtn" type="button">← 뒤로</button>
+        <div>
+          <h1 id="v774PanelTitle">싱글플레이</h1>
+          <div id="v774PanelSub" class="small">모드 고르고 바로 시작. 복잡함은 인간 사회에 충분하다.</div>
+        </div>
+      </div>
 
+      <h2 class="v774SectionTitle">모드</h2>
+      <div class="row v774ModeGrid">
+        <button class="modeBtn active" data-mode="team" type="button">2v2 팀전</button>
+        <button class="modeBtn" data-mode="solo2" type="button">개인전 2인</button>
+        <button class="modeBtn" data-mode="solo3" type="button">개인전 3인</button>
+        <button class="modeBtn" data-mode="solo4" type="button">개인전 4인</button>
+      </div>
+
+      <div class="v774PieceRow">
+        <span>인당 말</span>
+        <input id="pieceCount" type="number" min="1" max="6" value="4">
+        <span class="small">1~6</span>
+      </div>
+
+      <button id="startBtn" class="startBtn v774StartBtn" type="button">싱글 시작</button>
+
+      <div id="v774MultiOnly" class="v774MultiOnly hidden">
+        <div class="mpBox">
+          <h2>친구랑 같이 하기 v77.4 메뉴분리 AI 테스트</h2>
+          <div class="small">Worker를 넣으면 멀티, 안 넣어도 AI 테스트는 가능. 1인 시작도 허용.</div>
+          <input id="mpServerUrl" class="mpInput" placeholder="Cloudflare Worker 주소">
+          <div class="row v774MpInputs">
+            <input id="mpName" class="mpInput" placeholder="닉네임">
+            <input id="mpRoomCode" class="mpInput" placeholder="방 코드" maxlength="8" style="text-transform:uppercase">
+          </div>
+          <div class="row v774MpButtons">
+            <button id="mpCreateBtn" class="mpBtn primary" type="button">방 만들기</button>
+            <button id="mpJoinBtn" class="mpBtn" type="button">방 참가</button>
+            <button id="mpCopyBtn" class="mpBtn" type="button">초대 링크</button>
+          </div>
+          <div id="mpStatus" class="mpStatus">오프라인: AI 테스트 가능 · 1인 시작 가능</div>
+          <div id="mpPlayers" class="mpPlayers"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -9357,7 +9443,7 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
 (function(){
   "use strict";
   try{ document.title = "윷놀이 v77.2 AI 테스트"; }catch(e){}
-  window.YUTNORI_VERSION = "v77.3-ai-test-safe";
+  window.YUTNORI_VERSION = "v77.4-menu-split-ai-test";
 
   const V772 = window.V772 = window.V772 || {
     moveBusy:false,
@@ -9379,7 +9465,7 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
   function v772InstallVersionLabel(){
     try{
       document.querySelectorAll("h2").forEach(h=>{
-        if(/친구랑 같이 하기/i.test(h.textContent || "")) h.textContent = "친구랑 같이 하기 v77.3 AI 테스트 안전부팅";
+        if(/친구랑 같이 하기/i.test(h.textContent || "")) h.textContent = "친구랑 같이 하기 v77.4 메뉴분리 AI 테스트";
       });
       const status = q("mpStatus");
       if(status && !MP.connected && !status.dataset.v772){
@@ -9910,13 +9996,101 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
 })();
 </script>
 
+
+<script>
+/* v77.4: mobile first menu split. 기존 긴 로비를 싱글/멀티 첫 선택으로 분리. */
+(function(){
+  try{
+    document.title = "윷놀이 v77.4 메뉴분리 AI 테스트";
+    window.YUTNORI_VERSION = "v77.4-menu-split-ai-test";
+  }catch(e){}
+
+  function q(s){ return document.querySelector(s); }
+  function qa(s){ return Array.from(document.querySelectorAll(s)); }
+  function show(el){ if(el) el.classList.remove("hidden"); }
+  function hide(el){ if(el) el.classList.add("hidden"); }
+
+  function setModeButton(next){
+    try{ window.mode = next; }catch(e){}
+    try{ mode = next; }catch(e){}
+    qa(".modeBtn").forEach(btn=>btn.classList.toggle("active", btn.dataset.mode === next));
+  }
+
+  function bindModeButtons(){
+    qa(".modeBtn").forEach(btn=>{
+      if(btn.dataset.v774Bound) return;
+      btn.dataset.v774Bound = "1";
+      btn.addEventListener("click", e=>{
+        e.preventDefault();
+        setModeButton(btn.dataset.mode || "team");
+      }, true);
+    });
+  }
+
+  function openPanel(kind){
+    const landing = q("#v774Landing");
+    const panel = q("#v774ModePanel");
+    const multiOnly = q("#v774MultiOnly");
+    const title = q("#v774PanelTitle");
+    const sub = q("#v774PanelSub");
+    const start = q("#startBtn");
+    hide(landing); show(panel);
+    document.body.dataset.v774MenuMode = kind;
+    if(kind === "multi"){
+      show(multiOnly);
+      if(title) title.textContent = "멀티플레이";
+      if(sub) sub.textContent = "모드 선택, Worker 주소, 방 코드, 닉네임을 여기서 처리.";
+      if(start) start.textContent = "AI 테스트/멀티 시작";
+    }else{
+      hide(multiOnly);
+      if(title) title.textContent = "싱글플레이";
+      if(sub) sub.textContent = "원래 모드 그대로 고르고 바로 시작.";
+      if(start) start.textContent = "싱글 시작";
+    }
+    bindModeButtons();
+    try{ fitGameToScreen(); }catch(e){}
+  }
+
+  function backHome(){
+    show(q("#v774Landing"));
+    hide(q("#v774ModePanel"));
+    document.body.dataset.v774MenuMode = "home";
+  }
+
+  function install(){
+    const single = q("#v774SingleBtn");
+    const multi = q("#v774MultiBtn");
+    const back = q("#v774BackBtn");
+    if(single && !single.dataset.v774Bound){
+      single.dataset.v774Bound = "1";
+      single.addEventListener("click", ()=>openPanel("single"));
+    }
+    if(multi && !multi.dataset.v774Bound){
+      multi.dataset.v774Bound = "1";
+      multi.addEventListener("click", ()=>openPanel("multi"));
+    }
+    if(back && !back.dataset.v774Bound){
+      back.dataset.v774Bound = "1";
+      back.addEventListener("click", backHome);
+    }
+    bindModeButtons();
+    setModeButton("team");
+    backHome();
+  }
+
+  window.v774OpenMenuPanel = openPanel;
+  window.addEventListener("DOMContentLoaded", install);
+  setTimeout(install, 0);
+})();
+</script>
+
 <script>
 /* v77.3 mobile safe boot rescue
    새로고침 연타/저장상태 꼬임으로 menu와 game이 동시에 숨는 상황을 강제로 복구한다. */
 (function(){
   try{
-    document.title = "윷놀이 v77.3 AI 테스트 안전부팅";
-    window.YUTNORI_VERSION = "v77.3-ai-test-safe";
+    document.title = "윷놀이 v77.4 메뉴분리 AI 테스트";
+    window.YUTNORI_VERSION = "v77.4-menu-split-ai-test";
   }catch(e){}
 
   function hasResetParam(){
@@ -9986,7 +10160,7 @@ window.addEventListener("DOMContentLoaded", mpChatBind);
   function ensureVersionLabel(){
     const box = document.querySelector(".mpBox h2");
     if(box && !/v77\.3/.test(box.textContent)){
-      box.textContent = "친구랑 같이 하기 v77.3 AI 테스트 안전부팅";
+      box.textContent = "친구랑 같이 하기 v77.4 메뉴분리 AI 테스트";
     }
     const status = document.getElementById("mpStatus");
     if(status && !status.dataset.v773Touched){
