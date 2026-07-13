@@ -1,2299 +1,260 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>윷놀이 v78.1 멀티 정리판</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>윷놀이 v78.2 클린 멀티</title>
 <style>
-*{box-sizing:border-box}
-body{
-  user-select:none;
-  margin:0;
-  background:#f6f1e7;
-  color:#222;
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  overflow:auto;
+:root{
+  --bg:#f7f0df;
+  --panel:#fff8e7;
+  --ink:#251d18;
+  --line:#3d3028;
+  --soft:#efe0bb;
+  --accent:#2f5fd0;
+  --danger:#d94a38;
+  --shadow:0 10px 28px rgba(0,0,0,.16);
 }
-button,input{font:inherit}
-button{
-  border:1px solid #3b302a;
-  background:#fff;
-  border-radius:10px;
-  padding:9px 12px;
-  cursor:pointer;
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;user-select:none;overflow:hidden}
+button,input,select{font:inherit}
+button{border:2px solid var(--line);background:#fffdf6;border-radius:16px;padding:11px 14px;font-weight:900;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.18)}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+input,select{width:100%;border:2px solid var(--line);border-radius:14px;background:#fffdf6;padding:11px 12px;font-weight:800;color:var(--ink)}
+.hidden{display:none!important}
+#app{height:100dvh;width:100vw;overflow:hidden}
+.screen{height:100dvh;width:100vw;padding:14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.menuCard{width:min(560px,100%);height:min(760px,100%);display:flex;flex-direction:column;gap:14px;background:var(--panel);border:3px solid var(--line);border-radius:26px;padding:16px;box-shadow:var(--shadow);overflow:hidden}
+.menuTitle{text-align:center;font-size:24px;font-weight:1000;line-height:1.05;margin:0}.menuSub{text-align:center;font-size:12px;opacity:.75;font-weight:800;margin-top:-6px}
+.landingGrid{display:grid;grid-template-rows:1fr 1fr;gap:20px;min-height:0;flex:1}.bigMenuBtn{font-size:28px;border-radius:34px;background:#f3e7b7;display:flex;align-items:center;justify-content:center;min-height:0}.panelTop{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}.backBtn{padding:9px 12px}.sectionTitle{font-size:19px;font-weight:1000;text-align:center}.fieldGrid{display:grid;gap:9px;min-height:0;overflow:auto;padding:2px}.modeGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.modeBtn.active{background:#2f241f;color:white}.piecesRow{display:grid;grid-template-columns:1fr 90px;gap:8px;align-items:center}.primaryBtn{background:#2f241f;color:white}.mutedBtn{background:#f4e4c0}.statusBox{min-height:34px;border:1px dashed #8b765f;border-radius:12px;background:#fffdf8;padding:8px;font-size:12px;line-height:1.35;overflow:auto}.splitRow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.tiny{font-size:12px;opacity:.72;line-height:1.3}
+#gameScreen{height:100dvh;width:100vw;display:grid;grid-template-rows:48px minmax(0,1fr) 134px;background:#efe1c8;gap:7px;padding:7px;overflow:hidden}.topHud{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:6px 9px;min-width:0}.turnBadge{display:flex;align-items:center;gap:8px;font-weight:1000;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dot{width:18px;height:18px;border-radius:50%;border:2px solid #111;flex:0 0 auto}.hudText{font-size:13px;line-height:1.15;min-width:0}.hudSub{font-size:11px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.roomBadge{font-size:11px;font-weight:900;background:#211b18;color:#fff5e8;border-radius:999px;padding:7px 9px;white-space:nowrap}.boardWrap{position:relative;background:var(--panel);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0}#boardSvg{width:min(96vw,calc(100dvh - 208px));height:min(96vw,calc(100dvh - 208px));max-width:100%;max-height:100%;display:block}.path{stroke:#6f5a4d;stroke-width:5;stroke-linecap:round;fill:none;opacity:.45}.node{fill:#fffdf6;stroke:#3b302a;stroke-width:3}.corner{fill:#ecd9af}.center{fill:#ffd879}.startNode{fill:#e9f7ff}.piece{stroke:#111;stroke-width:2.5;filter:drop-shadow(0 3px 3px rgba(0,0,0,.24));cursor:pointer}.pieceText{font-size:12px;font-weight:1000;text-anchor:middle;dominant-baseline:middle;fill:white;pointer-events:none}.piece.selected{stroke:#fff;stroke-width:5}.labelText{font-size:10px;font-weight:900;text-anchor:middle;dominant-baseline:middle;fill:#3b302a;opacity:.75}.tray{background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:8px;display:grid;grid-template-columns:1fr 112px;gap:8px;min-height:0}.trayMain{display:grid;grid-template-rows:46px 1fr;gap:7px;min-width:0}.cards{display:flex;gap:8px;overflow-x:auto;align-items:center;scrollbar-width:none}.cards::-webkit-scrollbar{display:none}.cardBtn{width:44px;height:44px;border-radius:50%;padding:0;display:flex;align-items:center;justify-content:center;font-size:15px;background:#fffdf6;flex:0 0 auto}.cardBtn.active{background:#203c9f;color:white}.pieces{display:flex;gap:8px;overflow-x:auto;align-items:center;scrollbar-width:none}.pieces::-webkit-scrollbar{display:none}.pieceBtn{width:42px;height:42px;border-radius:50%;border:3px solid #111;color:white;font-weight:1000;flex:0 0 auto;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 rgba(0,0,0,.18)}.pieceBtn.selected{outline:4px solid #fff;outline-offset:-7px}.pieceBtn.disabled{opacity:.35}.actionBox{display:grid;grid-template-rows:1fr 1fr 1fr;gap:6px}.rollBtn{background:#2f241f;color:white}.smallBtn{font-size:12px;padding:6px 5px;border-radius:12px}.yutOverlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.05);z-index:50;pointer-events:none}.yutOverlay.show{display:flex}.yutCard{min-width:min(330px,88vw);border:4px solid #251d18;border-radius:28px;background:#fff6dc;box-shadow:0 16px 40px rgba(0,0,0,.35);padding:22px;text-align:center;animation:yutPop .3s ease both}.yutTitle{font-size:22px;font-weight:1000;margin-bottom:12px}.yutSticks{display:flex;justify-content:center;gap:9px;height:74px;align-items:center}.stick{width:30px;height:64px;border:2px solid #3b302a;border-radius:16px;background:linear-gradient(90deg,#b76928,#e4a45e);transform:rotate(var(--r,0deg))}.stick.back{background:linear-gradient(90deg,#fff8e5,#edd8ae)}.stick.rolling{animation:stickRoll .45s ease-in-out infinite alternate}.yutResult{font-size:42px;font-weight:1000;line-height:1.1}.centerToast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);background:#fff2c7;border:4px solid #231912;border-radius:28px;padding:24px 30px;box-shadow:var(--shadow);font-size:34px;font-weight:1000;z-index:60;opacity:0;pointer-events:none;text-align:center}.centerToast.show{animation:toastPop 1.1s ease both}.chatFab{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);width:50px;height:50px;border-radius:50%;z-index:40;background:#2f241f;color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center}.chatFab.glow{animation:chatGlow 1s ease-in-out infinite}.chatBadge{position:absolute;right:-4px;top:-5px;min-width:22px;height:22px;border-radius:999px;background:#ff4d28;color:white;font-size:12px;font-weight:1000;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff}.chatBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.05);z-index:70;display:none}.chatDrawer{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);height:min(430px,70dvh);background:#fff8e7;border:3px solid #2f241f;border-radius:22px;z-index:80;display:none;grid-template-rows:46px 1fr 44px;box-shadow:var(--shadow);overflow:hidden;transform-origin:bottom right}.chatDrawer.open{display:grid;animation:chatOpen .3s ease both}.chatBackdrop.open{display:block}.chatHead{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;font-weight:1000;background:#f0dfb9;border-bottom:2px solid #3b302a}.chatClose{padding:5px 10px;border-radius:10px}.chatLog{padding:9px;overflow:auto;font-size:13px;line-height:1.35}.chatLine{margin:0 0 8px;padding:7px 9px;border-radius:12px;background:#fffdf6;border:1px solid rgba(0,0,0,.1)}.chatLine.system{background:#241d18;color:#fff4d6;border:0;font-size:12px}.chatForm{display:grid;grid-template-columns:1fr 58px;gap:6px;padding:6px;border-top:2px solid #3b302a}.chatForm input{padding:8px 9px;border-radius:12px}.chatForm button{padding:8px 6px;border-radius:12px}.logMini{position:absolute;left:8px;bottom:8px;max-width:78%;font-size:11px;font-weight:900;background:rgba(34,27,22,.86);color:#fff8e9;border-radius:12px;padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:3}
+@keyframes yutPop{0%{opacity:0;transform:scale(.82)}60%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+@keyframes stickRoll{0%{transform:translateY(0) rotate(-24deg)}100%{transform:translateY(-18px) rotate(32deg)}}
+@keyframes toastPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.86)}15%,78%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.05)}}
+@keyframes chatOpen{0%{opacity:0;transform:scale(.86) translateY(22px)}65%{opacity:1;transform:scale(1.035) translateY(-4px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes chatGlow{0%,100%{box-shadow:0 0 0 rgba(255,80,40,0)}50%{box-shadow:0 0 18px rgba(255,80,40,.75)}}
+@media (min-width:720px){
+  .screen{padding:24px}.menuCard{height:auto;max-height:94dvh}.landingGrid{min-height:430px}#gameScreen{grid-template-rows:58px minmax(0,1fr) 150px;padding:12px;gap:10px}#boardSvg{width:min(78vh,860px);height:min(78vh,860px)}.tray{grid-template-columns:1fr 150px}.cardBtn{width:58px;height:58px}.pieceBtn{width:56px;height:56px}.chatFab{bottom:180px}
 }
-button:hover{background:#f1e4ce}
-button:disabled{opacity:.45;cursor:not-allowed}
-.screen{
-  width:100vw;
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-.card{
-  width:min(760px,96vw);
-  background:#fffaf0;
-  border:2px solid #3b302a;
-  border-radius:18px;
-  padding:22px;
-  box-shadow:0 12px 25px rgba(0,0,0,.12);
-}
-h1{margin:0 0 10px;font-size:32px}
-h2{margin:18px 0 8px;font-size:19px}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.modeBtn.active{background:#3b302a;color:#fff}
-.startBtn{
-  margin-top:18px;
-  width:100%;
-  padding:14px;
-  font-size:18px;
-  background:#2f241f;
-  color:white;
-}
+</style>
+</head>
+<body>
+<div id="app">
+  <section id="menuScreen" class="screen">
+    <div class="menuCard" id="landingPanel">
+      <h1 class="menuTitle">윷놀이 v78.2</h1>
+      <div class="menuSub">클린 구조 · AI 제거 · 모바일 우선</div>
+      <div class="landingGrid">
+        <button class="bigMenuBtn" id="goSingle">싱글플레이</button>
+        <button class="bigMenuBtn" id="goMulti">멀티플레이</button>
+      </div>
+    </div>
+    <div class="menuCard hidden" id="singlePanel">
+      <div class="panelTop"><button class="backBtn" data-back>←</button><div class="sectionTitle">싱글플레이</div></div>
+      <div class="fieldGrid">
+        <div class="modeGrid" id="singleModes"></div>
+        <div class="piecesRow"><div class="tiny">인당 말 개수</div><select id="singlePieces"><option>2</option><option selected>4</option></select></div>
+        <button class="primaryBtn" id="singleStart">싱글 시작</button>
+        <div class="statusBox">기존 모드만 남긴 싱글 화면. 멀티/워커 입력은 여기 안 넣음.</div>
+      </div>
+    </div>
+    <div class="menuCard hidden" id="multiPanel">
+      <div class="panelTop"><button class="backBtn" data-back>←</button><div class="sectionTitle">멀티플레이</div></div>
+      <div class="fieldGrid">
+        <div class="modeGrid" id="multiModes"></div>
+        <div class="piecesRow"><div class="tiny">인당 말 개수</div><select id="multiPieces"><option>2</option><option selected>4</option></select></div>
+        <input id="workerUrl" placeholder="Worker 주소: https://xxxx.workers.dev" />
+        <input id="nickName" placeholder="닉네임" maxlength="16" />
+        <input id="roomCode" placeholder="방 코드" maxlength="10" />
+        <div class="splitRow"><button id="createRoom">방 만들기</button><button id="joinRoom">방 참가</button></div>
+        <button class="primaryBtn" id="multiStart">멀티 게임 시작</button>
+        <div class="statusBox" id="mpStatus">Worker 주소를 넣고 방을 만들거나 참가.</div>
+      </div>
+    </div>
+  </section>
+  <section id="gameScreen" class="hidden">
+    <div class="topHud">
+      <div class="turnBadge"><span class="dot" id="turnDot"></span><div class="hudText"><div id="turnText">-</div><div class="hudSub" id="hintText">-</div></div></div>
+      <div class="roomBadge" id="roomBadge">SOLO</div>
+    </div>
+    <div class="boardWrap">
+      <svg id="boardSvg" viewBox="0 0 720 720" aria-label="윷판"></svg>
+      <div class="logMini" id="logMini">게임 준비</div>
+    </div>
+    <div class="tray">
+      <div class="trayMain"><div class="cards" id="cards"></div><div class="pieces" id="pieces"></div></div>
+      <div class="actionBox"><button class="rollBtn" id="rollBtn">윷 던지기</button><button class="smallBtn" id="autoBtn">자동진행</button><button class="smallBtn" id="exitBtn">나가기</button></div>
+    </div>
+  </section>
+</div>
+<div class="yutOverlay" id="yutOverlay"><div class="yutCard"><div class="yutTitle" id="yutOverlayTitle">윷 던지는 중</div><div class="yutSticks" id="yutSticks"></div><div class="yutResult hidden" id="yutOverlayResult"></div></div></div>
+<div class="centerToast" id="centerToast"></div>
+<button class="chatFab hidden" id="chatFab">💬<span class="chatBadge" id="chatBadge">0</span></button>
+<div class="chatBackdrop" id="chatBackdrop"></div>
+<div class="chatDrawer" id="chatDrawer"><div class="chatHead"><span id="chatTitle">채팅</span><button class="chatClose" id="chatClose">X</button></div><div class="chatLog" id="chatLog"></div><form class="chatForm" id="chatForm"><input id="chatInput" placeholder="메시지" maxlength="140" /><button>전송</button></form></div>
+<script>
+"use strict";
+window.YUTNORI_VERSION = "v78.2-true-clean";
 
-.game{
-  width:1920px;
-  height:1080px;
-  display:grid;
-  grid-template-columns:340px 1fr 430px;
-  gap:18px;
-  padding:18px;
-  margin:0 auto;
-  background:#efe1c8;
-}
-.leftPanel,.boardPanel,.sidePanel{
-  background:#fffaf0;
-  border:2px solid #3b302a;
-  border-radius:18px;
-  padding:14px;
-  min-height:0;
-}
-.leftPanel{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.boardPanel{
-  position:relative;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  padding-top:18px;
-  padding-bottom:190px;
-  overflow:hidden;
-}
-.sidePanel{
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-}
-#board{
-  width:860px;
-  height:860px;
-  display:block;
-  background:#fff8e9;
-  border-radius:16px;
-  border:1px solid rgba(59,48,42,.18);
-}
-.node{fill:#fff;stroke:#3b302a;stroke-width:3}
-.corner{fill:#f3dfb8}
-.center{fill:#ffe1a6}
-.startNode{fill:#e9f7ff}
-.path{stroke:#6b5144;stroke-width:5;stroke-linecap:round;fill:none;opacity:.45}
-.piece{stroke:#1c1715;stroke-width:2.5;cursor:pointer}
-.pieceText{font-size:12px;font-weight:800;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
-.selected{stroke:#000;stroke-width:5;filter:drop-shadow(0 0 5px rgba(0,0,0,.55))}
-.infoBox{
-  border:1px solid #6b5144;
-  border-radius:12px;
-  padding:10px;
-  background:#fffdf8;
-  margin-bottom:10px;
-}
-.turnTitle{
-  font-weight:900;
-  font-size:20px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.turnColorDot{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  border:3px solid #1c1715;
-  display:inline-block;
-}
-.small{font-size:14px;opacity:.82}
-.cards{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
-.moveCard{
-  width:62px;
-  height:62px;
-  border:2px solid #3b302a;
-  border-radius:50%;
-  background:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  cursor:pointer;
-  font-size:16px;
-  font-weight:900;
-  line-height:1.05;
-  padding:0;
-}
-.moveCard.active{background:#2f241f;color:white}
-.log{
-  height:215px;
-  overflow:auto;
-  background:#211b18;
-  color:#f9efd9;
-  border-radius:12px;
-  padding:10px;
-  font-size:13px;
-  line-height:1.45;
-}
-.hidden{display:none}
-.rules{
-  font-size:13px;
-  line-height:1.45;
-  background:#fffdf8;
-  border:1px dashed #6b5144;
-  padding:10px;
-  border-radius:12px;
-}
-.yutArea{
-  background:#f4e3c3;
-  border:2px solid #6b5144;
-  border-radius:14px;
-  padding:12px;
-  margin-top:10px;
-  min-height:128px;
-}
-.yutStage{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  justify-content:center;
-  min-height:78px;
-}
-.stick{
-  width:36px;
-  height:76px;
-  border-radius:18px;
-  border:2px solid #3b302a;
-  background:linear-gradient(90deg,#b86b28,#e3a15b);
-  box-shadow:0 4px 8px rgba(0,0,0,.18);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  font-size:12px;
-  color:#3b2415;
-  position:relative;
-  transition:transform .25s ease;
-}
-.stick.back{background:linear-gradient(90deg,#fff9ea,#f0dfbd)}
-.stick.back::after{
-  content:"";
-  width:10px;
-  height:10px;
-  background:#3b2415;
-  border-radius:50%;
-  position:absolute;
-  bottom:12px;
-  left:50%;
-  transform:translateX(-50%);
-}
-.stick.baekdo{
-  background:linear-gradient(90deg,#fff6dd,#e6ca93);
-  color:#8b1d1d;
-  writing-mode:vertical-rl;
-  letter-spacing:1px;
-}
-.stick.baekdo::after{
-  content:"";
-  width:9px;
-  height:9px;
-  background:#8b1d1d;
-  border-radius:50%;
-  position:absolute;
-  bottom:10px;
-  left:50%;
-  transform:translateX(-50%);
-}
+const MODES = [
+  {id:"team2v2", label:"2v2 팀전", teams:4, teamMap:[0,1,0,1]},
+  {id:"p2", label:"개인전 2인", teams:2},
+  {id:"p3", label:"개인전 3인", teams:3},
+  {id:"p4", label:"개인전 4인", teams:4}
+];
+const COLORS = ["#2f63df", "#e34a38", "#1f9d55", "#f1b833"];
+const NAMES = ["1P", "2P", "3P", "4P"];
+const END = 999;
+const ROUTES = {
+  main:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,END],
+  r5:[5,21,22,23,26,27,20,END],
+  r10:[10,24,25,23,26,27,20,END]
+};
+const POS = {
+  1:[615,615],2:[555,615],3:[495,615],4:[435,615],5:[360,615],
+  6:[285,615],7:[225,615],8:[165,615],9:[105,615],10:[75,575],
+  11:[75,500],12:[75,425],13:[75,350],14:[75,275],15:[75,200],
+  16:[105,145],17:[165,105],18:[225,105],19:[285,105],20:[360,105],
+  21:[435,555],22:[500,490],23:[360,360],24:[155,520],25:[230,445],26:[490,230],27:[555,165]
+};
+const LABELS = {1:"도",2:"개",3:"걸",4:"윷",5:"모",10:"모",15:"모",20:"출발/도착",23:"중앙"};
+let selectedMode = "p2";
+let selectedCard = null;
+let selectedPieceId = null;
+let game = null;
+let rolling = false;
+let autoBusy = false;
+const MP = {connected:false, host:false, ws:null, room:"", name:"", clientId:getClientId(), applying:false, sendTimer:null, lastUrl:"", seat:0};
+let unread = 0;
+let chatOpen = false;
 
-.stick.baekdoMark::before{
-  content:"백도윷\A▼";
-  white-space:pre;
-  position:absolute;
-  top:-42px;
-  left:50%;
-  transform:translateX(-50%);
-  writing-mode:horizontal-tb;
-  letter-spacing:-.5px;
-  color:#d83a2e;
-  font-size:12px;
-  line-height:1.05;
-  font-weight:1000;
-  text-align:center;
-  text-shadow:0 2px 0 rgba(255,255,255,.88);
-  filter:drop-shadow(0 2px 3px rgba(0,0,0,.18));
-  animation:baekdoPointerBounce .72s ease-in-out infinite;
-  z-index:4;
-  pointer-events:none;
+function q(id){return document.getElementById(id)}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function escapeHtml(s){return String(s||"").replace(/[&<>'"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;","\"":"&quot;"}[m]))}
+function getClientId(){try{let id=localStorage.getItem("yut78_client_id"); if(!id){id="c"+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem("yut78_client_id",id)} return id}catch(e){return "c"+Math.random().toString(36).slice(2)}}
+function setPanel(which){q("landingPanel").classList.toggle("hidden", which!=="landing");q("singlePanel").classList.toggle("hidden", which!=="single");q("multiPanel").classList.toggle("hidden", which!=="multi")}
+function modeButtons(host, target){target.innerHTML=""; MODES.forEach(m=>{const b=document.createElement("button"); b.className="modeBtn"+(selectedMode===m.id?" active":""); b.textContent=m.label; b.onclick=()=>{selectedMode=m.id; modeButtons(host,target)}; target.appendChild(b)})}
+function currentMode(){return MODES.find(m=>m.id===selectedMode)||MODES[1]}
+function currentNick(){return (q("nickName")?.value||"플레이어").trim().slice(0,16)||"플레이어"}
+function showMenu(){q("gameScreen").classList.add("hidden");q("menuScreen").classList.remove("hidden");q("chatFab").classList.add("hidden");closeChat();setPanel("landing")}
+function showGame(){q("menuScreen").classList.add("hidden");q("gameScreen").classList.remove("hidden");q("chatFab").classList.remove("hidden");renderAll()}
+
+function newGame(modeId, pieceCount){
+  const mode = MODES.find(m=>m.id===modeId)||MODES[1];
+  const teams = Array.from({length:mode.teams},(_,ti)=>({id:ti,name:NAMES[ti],color:COLORS[ti],score:0,pieces:Array.from({length:pieceCount},(_,pi)=>({id:`${ti}-${pi}`,team:ti,num:pi+1,route:null,idx:-1,node:0,done:false}))}));
+  return {version:window.YUTNORI_VERSION,mode:mode.id,pieceCount,teams,turn:0,cards:[],rollCharges:1,log:["게임 시작"],seq:0,lastAction:""};
 }
-@keyframes baekdoPointerBounce{
-  0%,100%{transform:translateX(-50%) translateY(0)}
-  50%{transform:translateX(-50%) translateY(-8px)}
+function activeTeam(){return game?.teams?.[game.turn]}
+function isMyTurn(){if(!MP.connected) return true; return MP.seat===game.turn || MP.host}
+function nextTurn(){selectedCard=null;selectedPieceId=null; if(!game) return; game.turn=(game.turn+1)%game.teams.length; game.cards=[]; game.rollCharges=1; addLog(`${activeTeam().name} 차례`); showTurnToast(); scheduleSync()}
+function routeForStart(value){return {route:"main", idx:value-1}}
+function canBranch(piece){const node=piece.node; return node===5 || node===10}
+function branchRouteForNode(node){return node===5?"r5":node===10?"r10":"main"}
+function normalizePieceRoute(piece){if(!piece.route && piece.node>0 && !piece.done){piece.route="main";piece.idx=Math.max(0,ROUTES.main.indexOf(piece.node))}}
+function posKey(p){return p.done?"DONE":(p.node>0?String(p.node):"OFF")}
+function stackForPiece(team,piece){if(!piece || piece.done || piece.node===0) return [piece]; return team.pieces.filter(p=>!p.done && p.node===piece.node)}
+function targetFor(piece,value){
+  if(piece.done) return null;
+  if(piece.node===0){ if(value<=0) return null; const st=routeForStart(value); const arr=ROUTES[st.route]; return arr[st.idx]===END?{done:true}:{route:st.route,idx:st.idx,node:arr[st.idx]}; }
+  normalizePieceRoute(piece);
+  let route=piece.route||"main"; let idx=piece.idx;
+  if(value>0 && canBranch(piece)) { route=branchRouteForNode(piece.node); idx=0; }
+  const arr=ROUTES[route]||ROUTES.main;
+  let nidx=idx+value;
+  if(nidx<0){ nidx=0; }
+  if(nidx>=arr.length || arr[nidx]===END) return {done:true};
+  return {route,idx:nidx,node:arr[nidx]};
 }
-body.mobile:not(.yutThrowing) .mobileYutSlot .stick.baekdoMark::before{
-  content:"▼";
-  top:-17px;
-  font-size:14px;
-  line-height:1;
+function resultByValue(value){return value===-1?"빽도":value===1?"도":value===2?"개":value===3?"걸":value===4?"윷":value===5?"모":"낙"}
+function rollYut(){
+  const r=Math.random();
+  if(r<.04) return {name:"낙",value:0,extra:false,nak:true,backs:0};
+  if(r<.10) return {name:"빽도",value:-1,extra:false,backs:1,backdo:true};
+  const backs=[1,2,3,4,0][Math.floor(Math.random()*5)];
+  const value=backs===0?5:backs;
+  return {name:resultByValue(value),value,extra:value>=4,backs};
 }
-body.mobile.yutThrowing .mobileYutSlot .stick.baekdoMark::before{
-  top:-40px;
-  font-size:12px;
+function cardId(){game.seq=(game.seq||0)+1; return "card"+game.seq+"_"+Date.now().toString(36)}
+function addLog(text){if(!game) return; game.lastAction=text; game.log.push(text); if(game.log.length>80) game.log.shift(); q("logMini").textContent=text}
+function taunt(type,a,b){
+  const bag={
+    yut:[`${a} 선수 또 주작치나요. ${b} 뽑아버립니다.`, `${a}님 ${b}? 윷판이 지금 로비 받았나 봅니다.`, `${a} ${b} 등장. 확률이 울고 있습니다.`],
+    cap:[`${a}: ${b}님 ㅋㅋ 잠깐 산책 나오셨나요.`, `아 ㅋㅋ ${b}님 레전드 발판입니다.`, `${a}님이 ${b}님을 조용히 집으로 보냈습니다.`],
+    nak:[`${a} 낙. 윷판도 가끔 사람을 거릅니다.`, `${a}님 낙입니다. 출근길 엘리베이터 놓친 느낌.`, `낙. 방금 플레이는 자연재해로 분류합니다.`]
+  };
+  const arr=bag[type]||[String(type)]; return arr[Math.floor(Math.random()*arr.length)];
 }
-.stick.rolling{animation:toss .55s ease-in-out infinite alternate}
-.stick:nth-child(2){transform:rotate(-5deg)}
-.stick:nth-child(3){transform:rotate(6deg)}
-.stick:nth-child(4){transform:rotate(-2deg)}
-@keyframes toss{
-  0%{transform:translateY(0) rotate(-18deg)}
-  50%{transform:translateY(-22px) rotate(35deg)}
-  100%{transform:translateY(6px) rotate(-28deg)}
-}
-.yutResult{text-align:center;font-weight:900;font-size:18px;margin-top:6px}
-.hintArrowShadow{
-  fill:rgba(0,0,0,.22);
-  cursor:pointer;
-}
-.hintArrowBody{
-  fill:#f5b942;
-  stroke:#5b3a12;
-  stroke-width:2;
-  cursor:pointer;
-  filter:drop-shadow(0 4px 3px rgba(0,0,0,.28));
-}
-.hintArrowHighlight{
-  fill:rgba(255,255,255,.5);
-  pointer-events:none;
-}
-.hintText{
-  font-size:11px;
-  font-weight:900;
-  text-anchor:middle;
-  dominant-baseline:middle;
-  pointer-events:none;
-  fill:#4a2d0d;
-  opacity:.88;
-}
-.alertBanner{
-  margin-top:8px;
-  padding:9px 10px;
-  border-radius:12px;
-  border:2px solid #8b4513;
-  background:#fff0ba;
-  font-weight:900;
-  text-align:center;
-  display:none;
-}
-.alertBanner.show{display:block}
-.reserveTitle{
-  font-size:24px;
-  font-weight:900;
-  margin-bottom:4px;
-}
-.reserveSub{
-  font-size:13px;
-  opacity:.78;
-  margin-bottom:8px;
-}
-.reserveGrid{
-  display:grid;
-  grid-template-rows:repeat(4,1fr);
-  gap:10px;
-  flex:1;
-  min-height:0;
-}
-.reserveLane{
-  border:2px solid #6b5144;
-  border-radius:14px;
-  background:#fffdf8;
-  padding:10px;
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-}
-.reserveLane.inactive{
-  opacity:.35;
-}
-.reserveLaneHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  font-weight:900;
-  margin-bottom:8px;
-}
-.reserveName{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.reserveDot{
-  width:18px;
-  height:18px;
-  border-radius:50%;
-  border:2px solid #1c1715;
-}
-.reservePieces{
-  display:flex;
-  flex-wrap:wrap;
-  align-content:flex-start;
-  gap:7px;
-  overflow:auto;
-  padding:4px;
-}
-.reservePiece{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  border:2px solid #1c1715;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  font-size:13px;
-  cursor:pointer;
-  flex:0 0 auto;
-}
-.reservePiece.selected{
-  outline:4px solid #111;
-  outline-offset:2px;
-}
-.reserveStats{
-  font-size:12px;
-  opacity:.75;
-}
-@media(max-width:1919px){
-  .game{
-    transform-origin:top left;
+function addChat(text,{system=false,notify=false}={}){const log=q("chatLog"); const div=document.createElement("div"); div.className="chatLine"+(system?" system":""); div.textContent=text; log.appendChild(div); log.scrollTop=log.scrollHeight; if(notify && !chatOpen){unread++; updateChatBadge();}}
+function systemChat(text){addChat(text,{system:true,notify:false})}
+function playerChat(name,text,remote=false){addChat(`${name}: ${text}`,{system:false,notify:remote})}
+function updateChatBadge(){const b=q("chatBadge"),fab=q("chatFab"); if(unread>0){b.style.display="flex"; b.textContent=String(Math.min(99,unread)); fab.classList.add("glow")}else{b.style.display="none"; fab.classList.remove("glow")}}
+function openChat(){chatOpen=true; unread=0; updateChatBadge(); q("chatBackdrop").classList.add("open"); q("chatDrawer").classList.add("open"); q("chatFab").classList.add("hidden"); q("chatLog").scrollTop=q("chatLog").scrollHeight}
+function closeChat(){chatOpen=false; q("chatBackdrop").classList.remove("open"); q("chatDrawer").classList.remove("open"); if(!q("gameScreen").classList.contains("hidden")) q("chatFab").classList.remove("hidden")}
+async function showYutSequence(name,result){const o=q("yutOverlay"), title=q("yutOverlayTitle"), sticks=q("yutSticks"), res=q("yutOverlayResult"); title.textContent=name; sticks.innerHTML=""; res.classList.add("hidden"); res.textContent=""; for(let i=0;i<4;i++){const s=document.createElement("div");s.className="stick rolling";s.style.setProperty("--r",`${[-8,4,10,-3][i]}deg`);sticks.appendChild(s)} o.classList.add("show"); await sleep(900); sticks.querySelectorAll(".stick").forEach((s,i)=>{s.classList.remove("rolling"); if(i<(result.backs||0)) s.classList.add("back")}); res.textContent=result.name; res.classList.remove("hidden"); await sleep(1000); o.classList.remove("show")}
+function centerToast(text){const el=q("centerToast"); el.textContent=text; el.classList.remove("show"); void el.offsetWidth; el.classList.add("show")}
+function showTurnToast(){centerToast(`${activeTeam()?.name||"?"} 차례`) }
+async function handleRoll(){if(!game||rolling||!isMyTurn()) return; if(game.rollCharges<=0){addLog("이동할 윷 결과를 먼저 사용");return} rolling=true; q("rollBtn").disabled=true; const t=activeTeam(); await showYutSequence(`${t.name} 윷 던지는 중`,{name:"",backs:0}); const r=rollYut(); await showYutSequence(`${t.name} 결과`,r); if(r.nak){addLog(`${t.name} 낙`); systemChat(taunt("nak",t.name)); game.rollCharges--; if(game.rollCharges<=0 && game.cards.length===0) nextTurn();}else{game.cards.push({id:cardId(),name:r.name,value:r.value,extra:r.extra}); game.rollCharges--; if(r.extra){game.rollCharges++; systemChat(taunt("yut",t.name,r.name));} addLog(`${t.name} 결과: ${r.name}`)} rolling=false; q("rollBtn").disabled=false; renderAll(); scheduleSync()}
+function allPieces(){return game?game.teams.flatMap(t=>t.pieces):[]}
+function movePiece(pieceId,cardIdArg){if(!game||rolling||!isMyTurn()) return; const card=game.cards.find(c=>c.id===cardIdArg); if(!card) return; const team=activeTeam(); const piece=team.pieces.find(p=>p.id===pieceId); if(!piece) return; const target=targetFor(piece,card.value); if(!target){addLog("그 결과로 움직일 수 없음");return}
+  const moving=stackForPiece(team,piece);
+  game.cards=game.cards.filter(c=>c.id!==card.id);
+  let captured=[];
+  if(target.done){moving.forEach(p=>{p.done=true;p.node=0;p.route=null;p.idx=-1}); team.score += moving.length; addLog(`${team.name} ${moving.length}개 도착`)}
+  else{
+    for(const ot of game.teams){ if(ot.id===team.id) continue; for(const op of ot.pieces){ if(!op.done && op.node===target.node){captured.push({team:ot,piece:op}); op.node=0; op.route=null; op.idx=-1; } } }
+    moving.forEach(p=>{p.done=false;p.route=target.route;p.idx=target.idx;p.node=target.node});
+    addLog(`${team.name} ${card.name} 이동 → ${target.node}`);
   }
-}
-
-.piece, .reservePiece, .bottomPiece{
-  transition:transform .12s ease, filter .12s ease;
-  transform-box:fill-box;
-  transform-origin:center;
-}
-.piece:hover, .reservePiece:hover, .bottomPiece:hover{
-  transform:scale(1.18);
-  filter:drop-shadow(0 0 8px rgba(0,0,0,.42));
-}
-.bottomReserve{
-  position:absolute;
-  left:50%;
-  bottom:20px;
-  transform:translateX(-50%);
-  width:860px;
-  min-height:138px;
-  background:rgba(255,250,240,.94);
-  border:2px solid #3b302a;
-  border-radius:18px;
-  padding:10px 14px;
-  box-shadow:0 8px 18px rgba(0,0,0,.16);
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  z-index:3;
-}
-.bottomReserveTitle{
-  font-size:19px;
-  font-weight:900;
-  text-align:center;
-}
-.bottomReservePieces{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-  justify-content:center;
-}
-.bottomPiece{
-  width:76px;
-  height:76px;
-  border-radius:50%;
-  border:4px solid #1c1715;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  font-size:28px;
-  cursor:pointer;
-}
-.bottomPiece.selected{
-  outline:4px solid #111;
-  outline-offset:2px;
-}
-.boardPanel{
-  position:relative;
-}
-.exitButton{
-  fill:#d94a38;
-  stroke:#5b120c;
-  stroke-width:2.5;
-  cursor:pointer;
-  filter:drop-shadow(0 4px 4px rgba(0,0,0,.32));
-}
-.exitButton:hover{
-  fill:#ff654f;
-}
-.exitText{
-  font-size:13px;
-  font-weight:900;
-  text-anchor:middle;
-  dominant-baseline:middle;
-  pointer-events:none;
-  fill:#fff;
-}
-
-
-.bigRollBtn{
-  width:100%;
-  padding:22px 18px;
-  font-size:32px;
-  font-weight:900;
-  border-radius:18px;
-  background:#2f241f;
-  color:#fff;
-  border:2px solid #1d1511;
-  box-shadow:0 6px 14px rgba(0,0,0,.18);
-}
-.bigRollBtn:hover{background:#47362f}
-.actionRow{
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-}
-.subBtn{
-  flex:1;
-  padding:12px 14px;
-  font-weight:800;
-}
-
-
-.centerTurnBanner{
-  position:fixed;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%) scale(.96);
-  min-width:520px;
-  padding:34px 54px;
-  border-radius:28px;
-  border:5px solid #2b2018;
-  background:linear-gradient(180deg, rgba(255,248,228,.98), rgba(243,226,188,.98));
-  box-shadow:0 18px 45px rgba(0,0,0,.32);
-  font-size:72px;
-  font-weight:1000;
-  text-align:center;
-  z-index:999;
-  letter-spacing:-1.5px;
-  opacity:0;
-  pointer-events:none;
-  display:none;
-}
-.centerTurnBanner .bannerDot{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  border:5px solid #1c1715;
-  display:inline-block;
-  vertical-align:-5px;
-  margin-right:18px;
-}
-.centerTurnBanner.show{
-  display:block;
-  animation:turnToast 1s ease forwards;
-}
-@keyframes turnToast{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(.88)}
-  10%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  70%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-50%) scale(1.04)}
-}
-.reserveLane.activeTurn{
-  box-shadow:0 0 0 4px rgba(255,255,255,.95), 0 0 0 8px var(--activeColor), 0 8px 18px rgba(0,0,0,.12);
-  border-color:var(--activeColor);
-}
-
-
-/* v17: simple yut throw display restore */
-.yutArea{
-  background:#f4e3c3 !important;
-  border:2px solid #6b5144 !important;
-  border-radius:14px !important;
-  padding:12px !important;
-  margin-top:10px !important;
-  min-height:128px !important;
-  box-shadow:none !important;
-}
-.yutStage{
-  display:flex !important;
-  gap:10px !important;
-  align-items:center !important;
-  justify-content:center !important;
-  min-height:78px !important;
-  height:auto !important;
-  position:static !important;
-  background:transparent !important;
-  overflow:visible !important;
-}
-.stick{
-  width:36px !important;
-  height:76px !important;
-  border-radius:18px !important;
-  position:relative !important;
-  left:auto !important;
-  top:auto !important;
-}
-.stick.rolling{
-  animation:toss .55s ease-in-out infinite alternate !important;
-}
-
-
-.piece{
-  transition:filter .12s ease, transform .12s ease;
-}
-
-
-.rollBox{
-  margin-top:auto;
-}
-.resetBox{
-  margin-top:12px;
-  padding-top:10px;
-  border-top:2px dashed rgba(59,48,42,.35);
-}
-.resetBtn{
-  width:100%;
-  padding:13px 14px;
-  font-size:15px;
-  font-weight:800;
-  border-radius:14px;
-  background:#fff8ea;
-  color:#3b302a;
-}
-.resetBtn:hover{
-  background:#f0dfc1;
-}
-
-
-.rankBadge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-width:54px;
-  padding:4px 8px;
-  border-radius:999px;
-  background:#2f241c;
-  color:#fff7e8;
-  font-size:13px;
-  font-weight:900;
-  margin-left:8px;
-}
-.gameOverText{
-  font-weight:900;
-  color:#7a1f1f;
-}
-
-
-.autoBtn{
-  width:100%;
-  margin-top:10px;
-  padding:15px 14px;
-  border-radius:18px;
-  background:linear-gradient(180deg,#3f3127,#251b15);
-  color:#fff4dc;
-  font-size:18px;
-  font-weight:1000;
-  box-shadow:0 6px 0 rgba(0,0,0,.28);
-}
-.autoBtn:hover{ transform:translateY(-1px); }
-.autoBtn:disabled{
-  opacity:.45;
-  transform:none;
-  cursor:not-allowed;
-}
-
-
-.autoBtn.running{
-  background:linear-gradient(180deg,#8b2f24,#5b1712);
-  color:#fff3e8;
-}
-
-
-.laneAutoBtn{
-  margin-left:8px;
-  padding:5px 9px;
-  border-radius:999px;
-  font-size:12px;
-  font-weight:1000;
-  background:#f3dfbc;
-  color:#3b302a;
-  border:2px solid rgba(59,48,42,.25);
-  box-shadow:none;
-}
-.laneAutoBtn.on{
-  background:#2f241c;
-  color:#fff3d2;
-  border-color:#2f241c;
-}
-.laneAutoBtn:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-
-/* v32 polish */
-.continueBtn{
-  background:linear-gradient(180deg,#3e3126,#221913) !important;
-  color:#fff3dc !important;
-  margin-top:10px;
-}
-.eventToast{
-  position:absolute;
-  left:50%;
-  top:44%;
-  transform:translate(-50%,-50%) scale(.94);
-  min-width:260px;
-  max-width:580px;
-  padding:18px 26px;
-  border-radius:26px;
-  background:rgba(45,31,22,.94);
-  color:#fff3d5;
-  font-size:32px;
-  font-weight:1000;
-  text-align:center;
-  z-index:60;
-  pointer-events:none;
-  box-shadow:0 16px 34px rgba(0,0,0,.34), inset 0 2px 0 rgba(255,255,255,.12);
-  opacity:0;
-}
-.eventToast.show{
-  animation:eventToastPop 1.15s ease forwards;
-}
-@keyframes eventToastPop{
-  0%{opacity:0; transform:translate(-50%,-50%) scale(.78)}
-  14%{opacity:1; transform:translate(-50%,-50%) scale(1.08)}
-  72%{opacity:1; transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0; transform:translate(-50%,-50%) scale(.96)}
-}
-.reservePiece.playable,
-.moveCard.playable{
-  outline:4px solid rgba(255,224,83,.92);
-  box-shadow:0 0 0 6px rgba(255,224,83,.22), 0 8px 18px rgba(0,0,0,.2);
-}
-.reservePiece.dimmed,
-.moveCard.dimmed{
-  opacity:.35;
-  filter:grayscale(.65);
-}
-.capturePulse{
-  animation:capturePulse .48s ease;
-}
-@keyframes capturePulse{
-  0%{filter:drop-shadow(0 0 0 rgba(255,0,0,0));}
-  50%{filter:drop-shadow(0 0 18px rgba(255,38,38,.95)); transform:scale(1.18);}
-  100%{filter:drop-shadow(0 0 0 rgba(255,0,0,0));}
-}
-.finishSparkle{
-  animation:finishSparkle .7s ease;
-}
-@keyframes finishSparkle{
-  0%{filter:drop-shadow(0 0 0 rgba(255,235,126,0));}
-  45%{filter:drop-shadow(0 0 24px rgba(255,235,126,.95)); transform:scale(1.24) rotate(8deg);}
-  100%{filter:drop-shadow(0 0 0 rgba(255,235,126,0));}
-}
-body.shakeGame #game{
-  animation:shakeGame .22s linear;
-}
-@keyframes shakeGame{
-  0%,100%{translate:0 0}
-  25%{translate:calc(5px * var(--shakeMul, 1)) calc(-2px * var(--shakeMul, 1))}
-  50%{translate:calc(-4px * var(--shakeMul, 1)) calc(3px * var(--shakeMul, 1))}
-  75%{translate:calc(3px * var(--shakeMul, 1)) calc(2px * var(--shakeMul, 1))}
-}
-
-
-.keyHelp{
-  margin-top:9px;
-  font-size:12px;
-  line-height:1.45;
-  color:#6b584a;
-  text-align:center;
-  font-weight:800;
-}
-.keyboardFocus{
-  outline:5px solid rgba(80,190,255,.9) !important;
-  box-shadow:0 0 0 8px rgba(80,190,255,.2), 0 8px 18px rgba(0,0,0,.22) !important;
-}
-
-
-/* v34: device-aware UI */
-.mobileCancelBtn{
-  display:none;
-  width:100%;
-  margin-top:10px;
-  padding:14px 12px;
-  border-radius:16px;
-  background:#fff1dc;
-  color:#3b302a;
-  font-size:17px;
-  font-weight:1000;
-  border:2px solid rgba(59,48,42,.28);
-  box-shadow:0 4px 0 rgba(59,48,42,.18);
-}
-body.mobile .mobileCancelBtn{
-  display:block;
-}
-body.mobile .keyHelp{
-  display:none;
-}
-body.mobile .autoBtn,
-body.mobile .bigRollBtn,
-body.mobile .mobileCancelBtn,
-body.mobile .resetBtn{
-  min-height:54px;
-}
-body.mobile .moveCard{
-  min-width:58px;
-  min-height:58px;
-}
-body.mobile .reservePiece,
-body.mobile .bottomReservePiece{
-  min-width:44px;
-  min-height:44px;
-}
-body.mobile .turnTitle{
-  font-size:20px;
-}
-body.mobile .log{
-  max-height:138px;
-}
-body.mobile .rightPanel{
-  touch-action:manipulation;
-}
-body.desktop .mobileCancelBtn{
-  display:none;
-}
-body.desktop .keyHelp{
-  display:block;
-}
-.deviceBadge{
-  position:absolute;
-  right:14px;
-  bottom:12px;
-  padding:5px 9px;
-  border-radius:999px;
-  background:rgba(47,36,28,.78);
-  color:#fff1d0;
-  font-size:11px;
-  font-weight:900;
-  z-index:20;
-  pointer-events:none;
-}
-body.mobile .deviceBadge::after{
-  content:"MOBILE";
-}
-body.desktop .deviceBadge::after{
-  content:"PC";
-}
-
-/* v35: real mobile layout, not tiny PC diorama */
-body.mobile{
-  overflow:auto !important;
-  background:#f6f0e4;
-}
-body.mobile #game{
-  transform:none !important;
-  transform-origin:top left !important;
-  width:100vw !important;
-  height:auto !important;
-  min-height:100vh !important;
-  margin:0 !important;
-  padding:8px !important;
-  box-sizing:border-box !important;
-  display:flex !important;
-  flex-direction:column !important;
-  gap:8px !important;
-}
-body.mobile .gameShell,
-body.mobile .gameLayout,
-body.mobile .mainGame,
-body.mobile .playArea{
-  width:100% !important;
-  height:auto !important;
-  display:flex !important;
-  flex-direction:column !important;
-  gap:8px !important;
-}
-body.mobile .leftPanel,
-body.mobile .boardPanel,
-body.mobile .rightPanel{
-  width:100% !important;
-  max-width:100% !important;
-  min-width:0 !important;
-  height:auto !important;
-  box-sizing:border-box !important;
-}
-body.mobile .boardPanel{
-  order:1;
-}
-body.mobile .rightPanel{
-  order:2;
-}
-body.mobile .leftPanel{
-  order:3;
-}
-body.mobile .boardWrap,
-body.mobile .boardBox,
-body.mobile .centerBoard{
-  width:100% !important;
-  max-width:100% !important;
-  height:auto !important;
-}
-body.mobile svg{
-  max-width:100% !important;
-  height:auto !important;
-}
-body.mobile .boardSvg,
-body.mobile #boardSvg{
-  width:100% !important;
-  height:auto !important;
-  max-height:58vh !important;
-}
-body.mobile .reserveGrid{
-  display:grid !important;
-  grid-template-columns:1fr 1fr !important;
-  gap:8px !important;
-}
-body.mobile .reserveLane{
-  min-height:86px !important;
-}
-body.mobile .rightPanel{
-  display:flex !important;
-  flex-direction:column !important;
-  gap:8px !important;
-}
-body.mobile .infoBox{
-  margin:0 !important;
-}
-body.mobile .yutArea{
-  min-height:142px !important;
-  padding:8px !important;
-}
-body.mobile .yutStage{
-  height:104px !important;
-  min-height:104px !important;
-}
-body.mobile .log{
-  max-height:92px !important;
-  min-height:70px !important;
-  font-size:15px !important;
-}
-body.mobile .cards{
-  min-height:62px !important;
-}
-body.mobile .bottomReserve{
-  padding:8px !important;
-}
-body.mobile .bottomReservePieces{
-  justify-content:center !important;
-  flex-wrap:wrap !important;
-}
-body.mobile .mobileCancelBtn{
-  display:block !important;
-}
-body.mobile .keyHelp{
-  display:none !important;
-}
-body.mobile .turnTitle{
-  font-size:18px !important;
-}
-body.mobile .small,
-body.mobile .turnSub,
-body.mobile .reserveStats{
-  font-size:15px !important;
-}
-body.mobile .panelTitle,
-body.mobile .sectionTitle{
-  font-size:13px !important;
-}
-body.mobile .bigRollBtn{
-  font-size:19px !important;
-  padding:15px !important;
-}
-body.mobile .autoBtn{
-  font-size:16px !important;
-  padding:13px !important;
-}
-body.mobile .resetBox{
-  margin-top:6px !important;
-  padding-top:6px !important;
-}
-body.mobile .deviceBadge{
-  position:fixed;
-  right:8px;
-  bottom:8px;
-}
-body.mobile .eventToast{
-  position:fixed;
-  top:42%;
-  font-size:22px;
-  max-width:82vw;
-}
-body.mobile .centerTurnBanner{
-  position:fixed !important;
-  top:38% !important;
-  left:50% !important;
-}
-
-/* If the original PC root is a 3-column grid, force it into mobile stacking */
-body.mobile .gameContent,
-body.mobile .gameGrid,
-body.mobile .layout{
-  display:flex !important;
-  flex-direction:column !important;
-  width:100% !important;
-  height:auto !important;
-  grid-template-columns:none !important;
-}
-
-
-/* v36: one-screen mobile gamepad layout */
-.mobileHud,
-.mobileBottomBar,
-.mobileOverlay{
-  display:none;
-}
-body.mobile{
-  overflow:hidden !important;
-  background:#efe6d5 !important;
-}
-
-body.mobile #game{
-  display:grid !important;
-  grid-template-rows:74px minmax(0, 1fr) 76px !important;
-  grid-template-columns:1fr !important;
-  width:100vw !important;
-  height:100dvh !important;
-  min-height:0 !important;
-  padding:7px !important;
-  gap:7px !important;
-  box-sizing:border-box !important;
-  background:#efe6d5 !important;
-  transform:none !important;
-  margin:0 !important;
-  overflow:hidden !important;
-}
-body.mobile .mobileHud{
-  display:grid !important;
-  grid-template-columns:44px minmax(0,1fr) 118px !important;
-  align-items:center !important;
-  gap:7px !important;
-  grid-row:1 !important;
-  min-height:0 !important;
-}
-
-body.mobile .mobileMenuBtn{
-  width:42px;
-  height:42px;
-  border-radius:14px;
-  background:#2f241c;
-  color:#fff2d8;
-  font-size:24px;
-  font-weight:1000;
-  line-height:1;
-  box-shadow:0 4px 0 rgba(0,0,0,.28);
-}
-body.mobile .mobileTurnBox{
-  min-width:0;
-  height:58px;
-  border:2px solid #3b302a;
-  border-radius:15px;
-  background:#fffaf0;
-  padding:7px 9px;
-  box-sizing:border-box;
-  overflow:hidden;
-}
-
-body.mobile .mobileTurnName{
-  font-size:16px;
-  font-weight:1000;
-  color:#2f241c;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-body.mobile .mobileRemainText{
-  font-size:11px;
-  font-weight:800;
-  color:#6b584a;
-  white-space:nowrap;
-}
-
-body.mobile .mobileCardMini{
-  display:flex;
-  gap:4px;
-  margin-top:2px;
-  overflow:hidden;
-}
-
-body.mobile .mobileCardMini .miniCard{
-  min-width:24px;
-  height:20px;
-  border-radius:999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:10px;
-  font-weight:1000;
-  background:#2f241c;
-  color:#fff1d0;
-}
-
-body.mobile .mobileYutSlot{
-  width:118px;
-  height:64px;
-  border:2px solid rgba(59,48,42,.45);
-  border-radius:15px;
-  background:#fff7e8;
-  overflow:hidden;
-  box-sizing:border-box;
-  position:relative;
-}
-
-body.mobile .mobileYutSlot .yutArea{
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  padding:3px !important;
-  border:0 !important;
-  border-radius:13px !important;
-  box-shadow:none !important;
-  background:#f2d6a6 !important;
-}
-
-body.mobile .mobileYutSlot .yutStage{
-  height:42px !important;
-  min-height:42px !important;
-  width:100% !important;
-  border-radius:12px !important;
-}
-
-body.mobile .mobileYutSlot .yutResult{
-  font-size:10px !important;
-  line-height:1 !important;
-  margin-top:1px !important;
-  font-weight:1000;
-}
-
-body.mobile .leftPanel,
-body.mobile .sidePanel{
-  display:none !important;
-}
-
-body.mobile .boardPanel{
-  grid-row:2 !important;
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  padding:6px !important;
-  border-radius:16px !important;
-  box-sizing:border-box !important;
-  overflow:hidden !important;
-  display:grid !important;
-  grid-template-rows:minmax(0,1fr) 78px !important;
-  align-items:center !important;
-  justify-content:center !important;
-  background:#fffaf0 !important;
-}
-
-body.mobile #board{
-  width:min(96vw, 62dvh) !important;
-  height:min(96vw, 62dvh) !important;
-  max-width:100% !important;
-  max-height:100% !important;
-  align-self:center !important;
-  justify-self:center !important;
-}
-
-body.mobile #bottomReserve{
-  align-self:end !important;
-  width:100% !important;
-  max-height:76px !important;
-  overflow:hidden !important;
-  padding:6px !important;
-  box-sizing:border-box !important;
-}
-
-body.mobile .bottomReserveTitle{
-  font-size:15px !important;
-  margin-bottom:3px !important;
-}
-
-body.mobile .bottomReservePieces{
-  gap:6px !important;
-  justify-content:center !important;
-  flex-wrap:nowrap !important;
-  overflow-x:auto !important;
-}
-
-body.mobile .bottomReservePiece{
-  width:38px !important;
-  height:38px !important;
-  min-width:38px !important;
-  min-height:38px !important;
-  font-size:15px !important;
-}
-
-body.mobile .mobileBottomBar{
-  display:grid !important;
-  grid-template-columns:1fr 82px 1fr !important;
-  gap:10px !important;
-  align-items:center !important;
-  grid-row:3 !important;
-  height:76px !important;
-  padding:4px 2px !important;
-  box-sizing:border-box !important;
-}
-
-body.mobile .mobileSideBtn{
-  height:54px;
-  border-radius:18px;
-  background:#fffaf0;
-  border:2px solid #3b302a;
-  color:#2f241c;
-  font-size:15px;
-  font-weight:1000;
-  box-shadow:0 5px 0 rgba(59,48,42,.2);
-}
-
-body.mobile .mobileSideBtn.auto{
-  background:#2f241c;
-  color:#fff1d0;
-}
-
-body.mobile .mobileRollCircle{
-  width:72px;
-  height:72px;
-  border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#fff2d0,#d84b34 58%,#912316 100%);
-  color:#fff8e8;
-  font-size:26px;
-  font-weight:1000;
-  border:4px solid #542016;
-  box-shadow:0 7px 0 #3a1711, 0 12px 20px rgba(0,0,0,.28);
-}
-
-body.mobile .mobileRollCircle:disabled,
-body.mobile .mobileSideBtn:disabled{
-  opacity:.45;
-  filter:grayscale(.6);
-}
-
-body.mobile .mobileOverlay{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  background:rgba(0,0,0,.42);
-  z-index:100;
-}
-
-body.mobile .mobileOverlay.hidden{
-  display:none !important;
-}
-
-.mobileMenuSheet,
-.autoChoiceSheet{
-  width:min(94vw, 430px);
-  max-height:86dvh;
-  overflow:auto;
-  background:#fffaf0;
-  border:3px solid #3b302a;
-  border-radius:24px 24px 0 0;
-  padding:16px;
-  box-shadow:0 -12px 34px rgba(0,0,0,.35);
-  box-sizing:border-box;
-}
-
-.mobileMenuHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  font-size:22px;
-  margin-bottom:12px;
-}
-
-.mobileMenuHeader button,
-.menuActionBtn,
-.autoChoiceSheet button{
-  padding:12px 14px;
-  border-radius:14px;
-  background:#2f241c;
-  color:#fff1d0;
-  font-weight:1000;
-  width:100%;
-  margin-top:8px;
-}
-
-.mobileMenuHeader button{
-  width:auto;
-  margin-top:0;
-  padding:8px 12px;
-}
-
-.menuSettingRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:13px 0;
-  border-bottom:1px solid rgba(59,48,42,.16);
-  font-weight:1000;
-}
-
-.pillToggle{
-  width:72px !important;
-  margin:0 !important;
-  border-radius:999px !important;
-  background:#2f8f46 !important;
-  color:#fff !important;
-}
-
-.pillToggle.off{
-  background:#7a3229 !important;
-}
-
-.menuSettingBlock{
-  margin-top:14px;
-}
-
-.menuSettingTitle{
-  font-size:14px;
-  font-weight:1000;
-  color:#3b302a;
-  margin-bottom:8px;
-}
-
-.shakeChoices{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:7px;
-}
-
-.shakeChoices button{
-  padding:10px;
-  border-radius:13px;
-  background:#f1dfbd;
-  font-weight:1000;
-}
-
-.shakeChoices button.active{
-  background:#2f241c;
-  color:#fff1d0;
-}
-
-.speedSlider{
-  position:relative;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:0;
-  padding:4px;
-  border-radius:999px;
-  background:#ead6b4;
-  border:2px solid rgba(59,48,42,.22);
-  overflow:hidden;
-}
-
-.speedSlider button{
-  position:relative;
-  z-index:2;
-  border-radius:999px;
-  padding:11px 0;
-  font-size:13px;
-  font-weight:1000;
-  background:transparent;
-  color:#3b302a;
-  box-shadow:none;
-}
-
-.speedKnob{
-  position:absolute;
-  left:4px;
-  top:4px;
-  bottom:4px;
-  width:calc((100% - 8px) / 4);
-  border-radius:999px;
-  background:#2f8f46;
-  transition:left .24s ease, background .24s ease;
-  z-index:1;
-}
-
-.speedSlider.speed-05 .speedKnob{ left:4px; background:#78634c; }
-.speedSlider.speed-1 .speedKnob{ left:calc(4px + (100% - 8px) * .25); background:#2f8f46; }
-.speedSlider.speed-2 .speedKnob{ left:calc(4px + (100% - 8px) * .50); background:#296ecf; }
-.speedSlider.speed-3 .speedKnob{ left:calc(4px + (100% - 8px) * .75); background:#c9332a; }
-
-.speedSlider.speed-05 button[data-speed="0.5"],
-.speedSlider.speed-1 button[data-speed="1"],
-.speedSlider.speed-2 button[data-speed="2"],
-.speedSlider.speed-3 button[data-speed="3"]{
-  color:#fff;
-}
-
-.ruleText{
-  font-size:12px;
-  line-height:1.55;
-  background:#f2e2c6;
-  border-radius:14px;
-  padding:11px;
-  color:#4a3a2e;
-  font-weight:800;
-}
-
-body.mobile .deviceBadge,
-body.mobile .keyHelp,
-body.mobile .mobileCancelBtn{
-  display:none !important;
-}
-
-body.mobile .eventToast{
-  top:44% !important;
-  font-size:20px !important;
-}
-
-body.desktop .mobileHud,
-body.desktop .mobileBottomBar,
-body.desktop .mobileOverlay{
-  display:none !important;
-}
-
-
-/* v37: mobile yut throw overlay + compressed reserve */
-body.mobile.yutThrowing .mobileYutSlot{
-  position:fixed !important;
-  left:50% !important;
-  top:46% !important;
-  transform:translate(-50%,-50%) !important;
-  width:min(84vw, 340px) !important;
-  height:220px !important;
-  z-index:90 !important;
-  border-radius:28px !important;
-  box-shadow:0 22px 54px rgba(0,0,0,.45), 0 0 0 999px rgba(0,0,0,.28) !important;
-  background:#fff5df !important;
-  animation:yutOverlayPop .18s ease-out;
-}
-
-@keyframes yutOverlayPop{
-  from{transform:translate(-50%,-50%) scale(.82); opacity:.55}
-  to{transform:translate(-50%,-50%) scale(1); opacity:1}
-}
-
-body.mobile.yutThrowing .mobileYutSlot .yutArea{
-  height:100% !important;
-  min-height:100% !important;
-  padding:10px !important;
-  border-radius:26px !important;
-}
-
-body.mobile.yutThrowing .mobileYutSlot .yutStage{
-  height:168px !important;
-  min-height:168px !important;
-}
-
-body.mobile.yutThrowing .mobileYutSlot .yutResult{
-  font-size:18px !important;
-  margin-top:4px !important;
-}
-
-body.mobile .boardPanel{
-  grid-template-rows:minmax(0,1fr) 44px !important;
-}
-
-body.mobile #bottomReserve{
-  max-height:42px !important;
-  min-height:0 !important;
-  padding:3px 5px !important;
-  border-radius:12px !important;
-}
-
-body.mobile .bottomReserveTitle{
-  display:none !important;
-}
-
-body.mobile .bottomReservePieces{
-  gap:4px !important;
-  height:34px !important;
-  align-items:center !important;
-  justify-content:center !important;
-  flex-wrap:nowrap !important;
-  overflow-x:auto !important;
-  padding:0 !important;
-}
-
-body.mobile .bottomReservePiece{
-  width:30px !important;
-  height:30px !important;
-  min-width:30px !important;
-  min-height:30px !important;
-  font-size:12px !important;
-  border-width:2px !important;
-  box-shadow:0 2px 0 rgba(0,0,0,.18) !important;
-}
-
-body.mobile #bottomReserve .small{
-  font-size:10px !important;
-  line-height:30px !important;
-}
-
-/* turn toast is too shouty on mobile; keep important event toast only */
-body.mobile .centerTurnBanner{
-  display:none !important;
-}
-
-body.mobile .eventToast{
-  padding:12px 18px !important;
-  font-size:18px !important;
-  border-radius:18px !important;
-  min-width:180px !important;
-}
-
-
-/* v38 fixes */
-body.mobile .mobileTurnBox{
-  position:relative;
-  overflow:hidden !important;
-}
-body.mobile .mobileCardMini{
-  height:38px !important;
-  margin-top:1px !important;
-  overflow:hidden !important;
-}
-
-body.mobile .mobileCardMini:empty{
-  display:none !important;
-}
-
-body.mobile .mobileCardMini .miniCard{
-  min-width:22px !important;
-  height:16px !important;
-  padding:0 5px !important;
-  font-size:9px !important;
-  background:#6f4b2f !important;
-  color:#fff1d0 !important;
-  border-radius:999px !important;
-  border:0 !important;
-}
-body.mobile .boardPanel{
-  grid-template-rows:minmax(0,1fr) 30px !important;
-}
-
-body.mobile #bottomReserve{
-  max-height:28px !important;
-  height:28px !important;
-  padding:1px 4px !important;
-  border-radius:10px !important;
-}
-
-body.mobile .bottomReservePieces{
-  height:24px !important;
-  gap:3px !important;
-}
-
-body.mobile .bottomReservePiece{
-  width:22px !important;
-  height:22px !important;
-  min-width:22px !important;
-  min-height:22px !important;
-  font-size:10px !important;
-  border-width:1.5px !important;
-  box-shadow:0 1px 0 rgba(0,0,0,.18) !important;
-}
-
-body.mobile #bottomReserve .small{
-  font-size:9px !important;
-  line-height:22px !important;
-}
-
-/* top-right yut preview must be a tiny preview, not cursed bamboo pipes */
-body.mobile:not(.yutThrowing) .mobileYutSlot .yutArea{
-  padding:2px !important;
-  overflow:hidden !important;
-}
-
-body.mobile:not(.yutThrowing) .mobileYutSlot .yutStage{
-  height:42px !important;
-  min-height:42px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:3px !important;
-  overflow:hidden !important;
-  perspective:none !important;
-}
-
-body.mobile:not(.yutThrowing) .mobileYutSlot .stick{
-  position:relative !important;
-  left:auto !important;
-  top:auto !important;
-  width:13px !important;
-  height:35px !important;
-  min-width:13px !important;
-  min-height:35px !important;
-  border-radius:8px !important;
-  font-size:15px !important;
-  transform:none !important;
-  writing-mode:vertical-rl !important;
-  box-shadow:inset 2px 0 3px rgba(255,255,255,.35), inset -2px 0 3px rgba(0,0,0,.16), 0 1px 2px rgba(0,0,0,.2) !important;
-  animation:none !important;
-}
-
-body.mobile:not(.yutThrowing) .mobileYutSlot .stick.rolling{
-  animation:none !important;
-  opacity:.75;
-}
-
-body.mobile:not(.yutThrowing) .mobileYutSlot .stick.back::after,
-body.mobile:not(.yutThrowing) .mobileYutSlot .stick.baekdo::after{
-  width:5px !important;
-  height:5px !important;
-  bottom:4px !important;
-}
-
-body.mobile:not(.yutThrowing) .mobileYutSlot .yutResult{
-  font-size:9px !important;
-  margin-top:1px !important;
-  white-space:nowrap !important;
-}
-
-/* overlay final result remains readable */
-body.mobile.yutThrowing .mobileYutSlot .stick{
-  position:relative !important;
-  width:34px !important;
-  height:88px !important;
-  border-radius:17px !important;
-  font-size:15px !important;
-}
-
-body.mobile.yutThrowing .mobileYutSlot .yutStage{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:9px !important;
-}
-
-
-/* v39: board/reserve sizing matched to marked screenshot */
-body.mobile #game{
-  grid-template-rows:74px minmax(0, 1fr) 76px !important;
-}
-
-body.mobile .boardPanel{
-  padding:6px 8px 7px 8px !important;
-  grid-template-rows:minmax(0,1fr) 66px !important;
-  align-items:stretch !important;
-  justify-content:stretch !important;
-  gap:4px !important;
-}
-
-body.mobile #board{
-  width:100% !important;
-  height:100% !important;
-  max-width:none !important;
-  max-height:none !important;
-  min-height:0 !important;
-  align-self:stretch !important;
-  justify-self:stretch !important;
-  display:block !important;
-  object-fit:contain !important;
-  border-radius:14px !important;
-}
-
-/* Bottom reserve is a slim tray: the tray can be wide, the pieces stay small */
-body.mobile #bottomReserve{
-  height:62px !important;
-  max-height:62px !important;
-  min-height:62px !important;
-  padding:5px 7px !important;
-  border-radius:14px !important;
-  box-sizing:border-box !important;
-  overflow:hidden !important;
-}
-
-body.mobile .bottomReservePieces{
-  height:50px !important;
-  min-height:50px !important;
-  gap:8px !important;
-  justify-content:space-around !important;
-  align-items:center !important;
-  overflow-x:auto !important;
-  flex-wrap:nowrap !important;
-  padding:0 4px !important;
-}
-/* The user marked this size, not dinner-plate size. */
-body.mobile .bottomReservePiece{
-  width:34px !important;
-  height:34px !important;
-  min-width:34px !important;
-  min-height:34px !important;
-  max-width:34px !important;
-  max-height:34px !important;
-  font-size:13px !important;
-  border-width:2px !important;
-  border-radius:50% !important;
-  box-shadow:0 2px 0 rgba(0,0,0,.18) !important;
-  flex:0 0 34px !important;
-}
-
-body.mobile #bottomReserve .small{
-  font-size:10px !important;
-  line-height:34px !important;
-}
-
-/* Keep the board border from eating vertical space visually */
-body.mobile .boardPanel::before{
-  content:"";
-  position:absolute;
-  inset:6px 8px 72px 8px;
-  border:0;
-  pointer-events:none;
-}
-
-/* Slightly tighter bottom control bar so the board tray gets room */
-body.mobile .mobileBottomBar{
-  height:72px !important;
-  grid-template-columns:1fr 76px 1fr !important;
-  gap:9px !important;
-}
-
-body.mobile .mobileRollCircle{
-  width:68px !important;
-  height:68px !important;
-  font-size:24px !important;
-}
-body.mobile .mobileSideBtn{
-  height:50px !important;
-  font-size:14px !important;
-}
-
-
-/* v40: tighter mobile waiting-piece tray, fuller tray width */
-body.mobile .boardPanel{
-  grid-template-rows:minmax(0,1fr) 54px !important;
-  gap:3px !important;
-  padding:6px 8px 7px 8px !important;
-}
-
-body.mobile #bottomReserve{
-  width:100% !important;
-  height:52px !important;
-  max-height:52px !important;
-  min-height:52px !important;
-  padding:4px 6px !important;
-  border-radius:13px !important;
-  box-sizing:border-box !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  overflow:hidden !important;
-}
-
-body.mobile .bottomReservePieces{
-  width:100% !important;
-  height:42px !important;
-  min-height:42px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-evenly !important;
-  gap:4px !important;
-  flex-wrap:nowrap !important;
-  overflow-x:auto !important;
-  padding:0 6px !important;
-  box-sizing:border-box !important;
-}
-
-body.mobile .bottomReservePiece{
-  width:38px !important;
-  height:38px !important;
-  min-width:38px !important;
-  min-height:38px !important;
-  max-width:38px !important;
-  max-height:38px !important;
-  flex:0 0 38px !important;
-  font-size:10px !important;
-  border-width:1.5px !important;
-  border-radius:50% !important;
-  line-height:1 !important;
-  box-shadow:0 1px 0 rgba(0,0,0,.18) !important;
-}
-
-body.mobile .bottomReservePiece.playable,
-body.mobile .bottomReservePiece.keyboardFocus{
-  outline-width:2px !important;
-  box-shadow:0 0 0 3px rgba(255,224,83,.22), 0 1px 0 rgba(0,0,0,.18) !important;
-}
-
-body.mobile #bottomReserve .small{
-  width:100% !important;
-  text-align:center !important;
-  font-size:10px !important;
-  line-height:38px !important;
-}
-
-
-/* v41: taller reserve tray, smaller waiting pieces */
-body.mobile .boardPanel{
-  grid-template-rows:minmax(0,1fr) 86px !important;
-  gap:4px !important;
-  padding:6px 8px 7px 8px !important;
-}
-
-body.mobile #bottomReserve{
-  width:100% !important;
-  height:82px !important;
-  max-height:82px !important;
-  min-height:82px !important;
-  padding:8px 10px !important;
-  border-radius:16px !important;
-  box-sizing:border-box !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  overflow:hidden !important;
-  background:#fffaf0 !important;
-}
-
-body.mobile .bottomReservePieces{
-  width:100% !important;
-  height:64px !important;
-  min-height:64px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:space-evenly !important;
-  gap:10px !important;
-  flex-wrap:nowrap !important;
-  overflow-x:auto !important;
-  padding:0 10px !important;
-  box-sizing:border-box !important;
-}
-
-body.mobile .bottomReservePiece{
-  width:24px !important;
-  height:24px !important;
-  min-width:24px !important;
-  min-height:24px !important;
-  max-width:24px !important;
-  max-height:24px !important;
-  flex:0 0 24px !important;
-  font-size:9px !important;
-  border-width:1.5px !important;
-  border-radius:50% !important;
-  line-height:1 !important;
-  box-shadow:0 1px 0 rgba(0,0,0,.16) !important;
-}
-
-body.mobile .bottomReservePiece.playable,
-body.mobile .bottomReservePiece.keyboardFocus{
-  outline-width:2px !important;
-  box-shadow:0 0 0 4px rgba(255,224,83,.18), 0 1px 0 rgba(0,0,0,.16) !important;
-}
-
-body.mobile #bottomReserve .small{
-  width:100% !important;
-  text-align:center !important;
-  font-size:15px !important;
-  line-height:64px !important;
-}
-
-
-/* v42: 18px waiting pieces + horizontal-only scroll */
-body.mobile #bottomReserve{
-  width:100% !important;
-  height:82px !important;
-  max-height:82px !important;
-  min-height:82px !important;
-  padding:8px 10px !important;
-  border-radius:16px !important;
-  box-sizing:border-box !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  overflow:hidden !important;
-}
-
-body.mobile .bottomReservePieces{
-  width:100% !important;
-  height:58px !important;
-  min-height:58px !important;
-  max-height:58px !important;
-  display:flex !important;
-  flex-direction:row !important;
-  align-items:center !important;
-  justify-content:flex-start !important;
-  gap:10px !important;
-  flex-wrap:nowrap !important;
-  overflow-x:auto !important;
-  overflow-y:hidden !important;
-  padding:0 12px !important;
-  box-sizing:border-box !important;
-  scrollbar-width:thin;
-  -webkit-overflow-scrolling:touch;
-}
-
-body.mobile .bottomReservePieces::-webkit-scrollbar{
-  height:4px;
-}
-body.mobile .bottomReservePieces::-webkit-scrollbar-thumb{
-  background:rgba(59,48,42,.35);
-  border-radius:999px;
-}
-
-body.mobile .bottomReservePiece{
-  width:38px !important;
-  height:38px !important;
-  min-width:38px !important;
-  min-height:38px !important;
-  max-width:38px !important;
-  max-height:38px !important;
-  flex:0 0 38px !important;
-  font-size:15px !important;
-  border-width:1.2px !important;
-  border-radius:50% !important;
-  line-height:1 !important;
-  padding:0 !important;
-  box-shadow:0 1px 0 rgba(0,0,0,.14) !important;
-}
-
-body.mobile .bottomReservePiece.playable,
-body.mobile .bottomReservePiece.keyboardFocus{
-  outline:2px solid rgba(255,224,83,.92) !important;
-  box-shadow:0 0 0 4px rgba(255,224,83,.16), 0 1px 0 rgba(0,0,0,.14) !important;
-}
-
-body.mobile #bottomReserve .small{
-  width:100% !important;
-  text-align:center !important;
-  font-size:15px !important;
-  line-height:58px !important;
-}
-
-
-/* v43: force tiny bottom waiting pieces and give board more space */
-body.mobile .boardPanel{
-  grid-template-rows:minmax(0,1fr) 52px !important;
-  gap:2px !important;
-  padding:5px 7px 6px 7px !important;
-}
-
-body.mobile #board{
-  width:100% !important;
-  height:100% !important;
-  max-width:none !important;
-  max-height:none !important;
-}
-
-body.mobile #bottomReserve{
-  width:100% !important;
-  height:50px !important;
-  max-height:50px !important;
-  min-height:50px !important;
-  padding:4px 8px !important;
-  box-sizing:border-box !important;
-  overflow:hidden !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-}
-
-/* Kill every old giant-piece rule inside the bottom tray. Yes, all of them. */
-body.mobile #bottomReserve .bottomReservePieces{
-  width:100% !important;
-  height:40px !important;
-  min-height:40px !important;
-  max-height:40px !important;
-  display:flex !important;
-  flex-direction:row !important;
-  flex-wrap:nowrap !important;
-  align-items:center !important;
-  justify-content:flex-start !important;
-  gap:12px !important;
-  overflow-x:auto !important;
-  overflow-y:hidden !important;
-  padding:0 10px !important;
-  box-sizing:border-box !important;
-  -webkit-overflow-scrolling:touch !important;
-}
-
-body.mobile #bottomReserve .bottomReservePiece,
-body.mobile #bottomReserve .reservePiece,
-body.mobile #bottomReserve button,
-body.mobile #bottomReserve .pieceBtn{
-  width:38px !important;
-  height:38px !important;
-  min-width:38px !important;
-  min-height:38px !important;
-  max-width:38px !important;
-  max-height:38px !important;
-  flex:0 0 38px !important;
-  aspect-ratio:1 / 1 !important;
-  padding:0 !important;
-  margin:0 !important;
-  border-radius:50% !important;
-  border-width:1.2px !important;
-  font-size:15px !important;
-  line-height:38px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  transform:none !important;
-  box-shadow:0 1px 0 rgba(0,0,0,.15) !important;
-}
-
-body.mobile #bottomReserve .bottomReservePiece.playable,
-body.mobile #bottomReserve .bottomReservePiece.keyboardFocus,
-body.mobile #bottomReserve .reservePiece.playable,
-body.mobile #bottomReserve .reservePiece.keyboardFocus{
-  outline:2px solid rgba(255,224,83,.9) !important;
-  box-shadow:0 0 0 3px rgba(255,224,83,.16), 0 1px 0 rgba(0,0,0,.15) !important;
-}
-
-/* If previous CSS made polygon-ish pseudo edges, hide them in mobile tray */
-body.mobile #bottomReserve .bottomReservePiece::before,
-body.mobile #bottomReserve .bottomReservePiece::after,
-body.mobile #bottomReserve .reservePiece::before,
-body.mobile #bottomReserve .reservePiece::after{
-  display:none !important;
-}
-body.mobile #bottomReserve .small{
-  width:100% !important;
-  text-align:center !important;
-  font-size:10px !important;
-  line-height:64px !important;
-}
-
-
-/* v44: keep reserve window tall, shrink only the pieces */
-body.mobile .boardPanel{
-  grid-template-rows:minmax(0,1fr) 92px !important;
-  gap:4px !important;
-  padding:5px 7px 7px 7px !important;
-}
-
-body.mobile #bottomReserve{
-  width:100% !important;
-  height:88px !important;
-  max-height:88px !important;
-  min-height:88px !important;
-  padding:9px 12px !important;
-  border-radius:18px !important;
-  box-sizing:border-box !important;
-  overflow:hidden !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  background:#fffaf0 !important;
-}
-
-body.mobile #bottomReserve .bottomReserveTitle{
-  display:none !important;
-}
-
-body.mobile #bottomReserve .bottomReservePieces{
-  width:100% !important;
-  height:64px !important;
-  min-height:64px !important;
-  max-height:64px !important;
-  display:flex !important;
-  flex-direction:row !important;
-  flex-wrap:nowrap !important;
-  align-items:center !important;
-  justify-content:flex-start !important;
-  gap:14px !important;
-  overflow-x:auto !important;
-  overflow-y:hidden !important;
-  padding:0 12px !important;
-  box-sizing:border-box !important;
-  -webkit-overflow-scrolling:touch !important;
-}
-
-/* Actual rendered class is .bottomPiece, not .bottomReservePiece. Humanity survives another naming crime. */
-body.mobile #bottomReserve .bottomPiece,
-body.mobile #bottomReserve .bottomReservePiece,
-body.mobile #bottomReserve .reservePiece{
-  width:38px !important;
-  height:38px !important;
-  min-width:38px !important;
-  min-height:38px !important;
-  max-width:38px !important;
-  max-height:38px !important;
-  flex:0 0 38px !important;
-  aspect-ratio:1 / 1 !important;
-  padding:0 !important;
-  margin:0 !important;
-  border-radius:50% !important;
-  border-width:1.2px !important;
-  font-size:15px !important;
-  line-height:38px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  transform:none !important;
-  box-shadow:0 1px 0 rgba(0,0,0,.15) !important;
-}
-
-body.mobile #bottomReserve .bottomPiece.selected,
-body.mobile #bottomReserve .bottomPiece.playable,
-body.mobile #bottomReserve .bottomPiece.keyboardFocus,
-body.mobile #bottomReserve .bottomReservePiece.selected,
-body.mobile #bottomReserve .bottomReservePiece.playable,
-body.mobile #bottomReserve .bottomReservePiece.keyboardFocus{
-  outline:2px solid rgba(255,224,83,.92) !important;
-  box-shadow:0 0 0 4px rgba(255,224,83,.16), 0 1px 0 rgba(0,0,0,.15) !important;
-}
-
-body.mobile #bottomReserve .bottomPiece::before,
-body.mobile #bottomReserve .bottomPiece::after,
-body.mobile #bottomReserve .bottomReservePiece::before,
-body.mobile #bottomReserve .bottomReservePiece::after{
-  display:none !important;
-}
-
-body.mobile #bottomReserve .small{
-  width:100% !important;
-  text-align:center !important;
-  font-size:15px !important;
-  line-height:64px !important;
-}
-
-
-/* v45: bottom waiting pieces set to 26px */
-body.mobile #bottomReserve .bottomPiece{
-  width:38px !important;
-  height:38px !important;
-  min-width:38px !important;
-  min-height:38px !important;
-  max-width:38px !important;
-  max-height:38px !important;
-  flex:0 0 38px !important;
-  font-size:15px !important;
-  line-height:38px !important;
-}
-
-
-/* v46: bottom waiting pieces set to 38px */
-body.mobile #bottomReserve .bottomPiece{
-  width:38px !important;
-  height:38px !important;
-  min-width:38px !important;
-  min-height:38px !important;
-  max-width:38px !important;
-  max-height:38px !important;
-  flex:0 0 38px !important;
-  font-size:15px !important;
-  line-height:38px !important;
-}
-
-
-/* v47: hide waiting-piece tray scrollbar, keep horizontal swipe */
-body.mobile #bottomReserve .bottomReservePieces{
-  scrollbar-width:none !important;
-  -ms-overflow-style:none !important;
-}
-body.mobile #bottomReserve .bottomReservePieces::-webkit-scrollbar{
-  display:none !important;
-  width:0 !important;
-  height:0 !important;
-}
-
-
-/* v48: kept cards moved from HUD to board top-left */
-body.mobile .mobileCardMini{
-  display:none !important;
-}
-body.mobile .mobileTurnBox{
-  padding-top:8px !important;
-}
-
-body.mobile .mobileYutSlot{
-  transform:translateY(-6px) !important;
-}
-
-body.mobile .boardPanel{
-  position:relative !important;
-}
-
-body.mobile .boardCardStack{
-  position:absolute;
-  left:18px;
-  top:12px;
-  z-index:9;
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-start;
-  pointer-events:auto;
-  max-width:42%;
-}
-
-body.mobile .boardCardToken{
-  width:34px;
-  height:34px;
-  min-width:34px;
-  min-height:34px;
-  border-radius:50%;
-  margin-right:-8px;
-  border:2px solid #3b302a;
-  background:#fff7e2;
-  color:#2f241c;
-  font-size:11px;
-  font-weight:1000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 3px 0 rgba(0,0,0,.14);
-  position:relative;
-  z-index:1;
-}
-
-body.mobile .boardCardToken:nth-child(1){ z-index:6; }
-body.mobile .boardCardToken:nth-child(2){ z-index:5; }
-body.mobile .boardCardToken:nth-child(3){ z-index:4; }
-body.mobile .boardCardToken:nth-child(4){ z-index:3; }
-body.mobile .boardCardToken:nth-child(5){ z-index:2; }
-body.mobile .boardCardToken:nth-child(6){ z-index:1; }
-
-body.mobile .boardCardToken.selected{
-  background:#ffe899;
-  box-shadow:0 0 0 3px rgba(255,224,83,.24), 0 3px 0 rgba(0,0,0,.14);
-  transform:translateY(-2px);
-}
-
-body.mobile .boardCardToken.backdo{
-  background:#f8efe3;
-}
-
-body.desktop .boardCardStack{
-  display:none !important;
-}
-
-
-/* v52: keyboard target/move lock-in */
-.hintArrowBody.lockedHint{
-  fill:#ffdf5b !important;
-  stroke:#2f241c !important;
-  stroke-width:3 !important;
-}
-.exitButton.lockedHint{
-  fill:#ffdf5b !important;
-  stroke:#2f241c !important;
-  stroke-width:3 !important;
-}
-body.mobile #bottomReserve .bottomPiece.selected{
-  transform:translateY(-2px) !important;
-}
-
-
-/* v53: PC settings + PC yut overlay + grouped stack keyboard targets */
-.pcSettingsBtn{
-  width:100%;
-  padding:13px 14px;
-  margin-bottom:10px;
-  font-size:15px;
-  font-weight:900;
-  border-radius:14px;
-  background:#2f241c;
-  color:#fff4dc;
-}
-
-.pcSettingsOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.42);
-  z-index:80;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-.pcSettingsOverlay.hidden{
-  display:none !important;
-}
-
-.pcSettingsSheet{
-  width:min(420px,92vw);
-  background:#fff7e8;
-  border:2px solid #3b302a;
-  border-radius:20px;
-  box-shadow:0 18px 40px rgba(0,0,0,.28);
-  padding:18px;
-  color:#2f241c;
-}
-
-.pcSettingsHeader{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:14px;
-  font-size:20px;
-}
-
-.pcSettingsHeader button{
-  padding:8px 12px;
-  border-radius:12px;
-  background:#3b302a;
-  color:#fff7e8;
-  font-weight:900;
-}
-
-.pcSettingRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:12px 0;
-  border-top:1px dashed rgba(59,48,42,.3);
-  font-weight:900;
-}
-
-.pcSettingBlock{
-  padding:12px 0;
-  border-top:1px dashed rgba(59,48,42,.3);
-}
-
-.pcSettingTitle{
-  font-weight:1000;
-  margin-bottom:8px;
-}
-
-.speedChoices{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-}
-
-.speedChoices button{
-  padding:10px 0;
-  border-radius:12px;
-  background:#f4e3c3;
-  color:#3b302a;
-  font-weight:1000;
-}
+  if(captured.length){game.rollCharges++; const victim=[...new Set(captured.map(x=>x.team.name))].join(", "); systemChat(taunt("cap",team.name,victim)); addLog(`${team.name} 잡기 성공`)}
+  selectedCard=null;selectedPieceId=null;
+  if(team.score>=team.pieces.length){centerToast(`${team.name} 승리`); addLog(`${team.name} 승리`)}
+  else if(game.cards.length===0 && game.rollCharges<=0){nextTurn()}
+  renderAll(); scheduleSync();}
+function nodeDistanceFromStart(node){const idx=ROUTES.main.indexOf(node); return idx>=0?idx+1:99}
+function evaluateMove(piece,card){const t=activeTeam(); const target=targetFor(piece,card.value); if(!target) return -1e9; let score=0; if(target.done) score+=1000; else{
+    for(const ot of game.teams){if(ot.id===t.id) continue; for(const op of ot.pieces){if(!op.done && op.node===target.node) score+=520;}}
+    const dist=nodeDistanceFromStart(target.node);
+    const enemyWaiting=game.teams.some(ot=>ot.id!==t.id && ot.pieces.some(p=>p.node===0&&!p.done));
+    if(enemyWaiting && dist>=1 && dist<=5) score-=260-(dist*25);
+    score+=target.node;
+  }
+  if(piece.node===0) score-=25;
+  if(card.extra) score+=80;
+  return score;
+}
+async function autoProceed(){if(autoBusy||!game||!isMyTurn()) return; autoBusy=true; try{
+  if(game.rollCharges>0){await handleRoll(); await sleep(1500)}
+  while(game.cards.length>0 && isMyTurn()){
+    let best=null; for(const c of game.cards){for(const p of activeTeam().pieces){const s=evaluateMove(p,c); if(!best||s>best.s) best={p,c,s};}}
+    if(!best || best.s<-1e8) break;
+    await sleep((best.c.extra?500:1500)); movePiece(best.p.id,best.c.id); await sleep(800);
+    if(game.rollCharges>0) break;
+  }
+  if(game.rollCharges>0 && game.cards.length===0) await sleep(500);
+}finally{autoBusy=false;renderAll()}}
+function drawBoard(){const svg=q("boardSvg"); svg.innerHTML=""; const line=(arr)=>{let d=""; arr.forEach((n,i)=>{if(n===END)return; const [x,y]=POS[n]; d+=(i?"L":"M")+x+" "+y+" "}); const p=document.createElementNS("http://www.w3.org/2000/svg","path"); p.setAttribute("d",d); p.setAttribute("class","path"); svg.appendChild(p)}; line([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,1]); line([5,21,22,23,26,27,20]); line([10,24,25,23,22,21,5]); Object.entries(POS).forEach(([n,[x,y]])=>{const c=document.createElementNS("http://www.w3.org/2000/svg","circle"); c.setAttribute("cx",x);c.setAttribute("cy",y);c.setAttribute("r",n==23?20:17);c.setAttribute("class","node "+([5,10,15,20].includes(+n)?"corner":"")+(n==23?" center":"")+(n==1?" startNode":"")); svg.appendChild(c); if(LABELS[n]){const tx=document.createElementNS("http://www.w3.org/2000/svg","text"); tx.setAttribute("x",x);tx.setAttribute("y",y+(n==20?34:33));tx.setAttribute("class","labelText");tx.textContent=LABELS[n];svg.appendChild(tx)}}); if(!game) return; const grouped={}; allPieces().forEach(p=>{if(!p.done&&p.node>0){(grouped[p.node] ||= []).push(p)}}); Object.entries(grouped).forEach(([node,arr])=>{const [x,y]=POS[node]; arr.forEach((p,i)=>{const off=(i-(arr.length-1)/2)*14; const cy=y+(arr.length>1?off:0); const cir=document.createElementNS("http://www.w3.org/2000/svg","circle"); cir.setAttribute("cx",x);cir.setAttribute("cy",cy);cir.setAttribute("r",18);cir.setAttribute("fill",COLORS[p.team]);cir.setAttribute("class","piece"+(selectedPieceId===p.id?" selected":"")); cir.dataset.id=p.id; cir.addEventListener("click",()=>pieceClick(p.id)); svg.appendChild(cir); const tx=document.createElementNS("http://www.w3.org/2000/svg","text"); tx.setAttribute("x",x);tx.setAttribute("y",cy+1);tx.setAttribute("class","pieceText"); tx.textContent=p.num; svg.appendChild(tx)})})}
+function renderTray(){const cards=q("cards"), pieces=q("pieces"); cards.innerHTML=""; pieces.innerHTML=""; if(!game) return; game.cards.forEach(c=>{const b=document.createElement("button"); b.className="cardBtn"+(selectedCard===c.id?" active":""); b.textContent=c.name; b.onclick=()=>{selectedCard=selectedCard===c.id?null:c.id; renderAll()}; cards.appendChild(b)}); activeTeam().pieces.forEach(p=>{const b=document.createElement("button"); b.className="pieceBtn"+(selectedPieceId===p.id?" selected":"")+(p.done?" disabled":""); b.style.background=activeTeam().color; b.textContent=p.done?"✓":p.num; b.onclick=()=>pieceClick(p.id); pieces.appendChild(b)})}
+function pieceClick(id){if(!game||!isMyTurn()) return; selectedPieceId=id; if(selectedCard) movePiece(id,selectedCard); else renderAll()}
+function renderHud(){if(!game)return; const t=activeTeam(); q("turnDot").style.background=t.color; q("turnText").textContent=`${t.name} 차례`; q("hintText").textContent=`던질 기회 ${game.rollCharges} · 카드 ${game.cards.length} · ${isMyTurn()?"내 조작 가능":"상대 대기"}`; q("roomBadge").textContent=MP.connected?`MULTI ${MP.room} · ${MP.seat+1}P`:"SOLO"; q("rollBtn").disabled=!isMyTurn()||rolling||game.rollCharges<=0; q("autoBtn").disabled=!isMyTurn()||autoBusy; q("chatTitle").textContent=MP.connected?`방 채팅 · ${MP.room}`:"채팅"}
+function renderAll(){drawBoard();renderTray();renderHud()}
+function startGame(multiplayer=false){const mode=currentMode(); const pieces=+(multiplayer?q("multiPieces").value:q("singlePieces").value); game=newGame(mode.id,pieces); selectedCard=null; selectedPieceId=null; showGame(); showTurnToast(); scheduleSync(); systemChat("게임 시작. 과거 패치 찌꺼기 없는 클린판입니다.")}
+function workerWsUrl(url,room){const u=String(url||"").trim().replace(/\/+$/," ").trim(); if(!u) return ""; return u.replace(/^https:/i,"wss:").replace(/^http:/i,"ws:") + "/ws/" + encodeURIComponent(room)}
+function mpSetStatus(text){q("mpStatus").textContent=text}
+function mpConnect(create){const url=q("workerUrl").value.trim(); let room=q("roomCode").value.trim().toUpperCase(); const name=currentNick(); if(!url){mpSetStatus("Worker 주소 필요");return} if(create&&!room){room=Math.random().toString(36).slice(2,7).toUpperCase(); q("roomCode").value=room} if(!room){mpSetStatus("방 코드 필요");return} try{MP.ws?.close()}catch(e){} MP.room=room;MP.name=name;MP.host=!!create;MP.seat=create?0:1;MP.lastUrl=url; mpSetStatus(`${room} 연결 중`); let ws; try{ws=new WebSocket(workerWsUrl(url,room))}catch(e){mpSetStatus("Worker 주소 형식 오류");return} MP.ws=ws; ws.onopen=()=>{MP.connected=true;mpSetStatus(`${room} 연결됨`); ws.send(JSON.stringify({type:"hello",room,name,clientId:MP.clientId,version:window.YUTNORI_VERSION})); if(create){startGame(true); setTimeout(scheduleSync,300)}}; ws.onmessage=ev=>{let msg; try{msg=JSON.parse(ev.data)}catch(e){return} handleMpMessage(msg)}; ws.onclose=()=>{MP.connected=false;mpSetStatus("연결 끊김")}; ws.onerror=()=>mpSetStatus("연결 오류. Worker 주소/배포 확인")}
+function handleMpMessage(msg){if(!msg||msg.clientId===MP.clientId) return; if(msg.type==="chat"){playerChat(msg.name||"상대",msg.text||"",true);return} if(msg.type==="state"&&msg.payload){MP.applying=true; game=msg.payload; MP.applying=false; showGame(); renderAll(); return} if(msg.type==="hello" && MP.host && game){scheduleSync();}}
+function serializableState(){return JSON.parse(JSON.stringify(game))}
+function sendStateNow(){if(!MP.connected||!MP.ws||MP.ws.readyState!==WebSocket.OPEN||MP.applying||!game) return; try{MP.ws.send(JSON.stringify({type:"state",room:MP.room,name:MP.name,clientId:MP.clientId,version:window.YUTNORI_VERSION,payload:serializableState()}))}catch(e){}}
+function scheduleSync(){if(!MP.connected)return; clearTimeout(MP.sendTimer); MP.sendTimer=setTimeout(sendStateNow,80)}
+setInterval(()=>{if(MP.connected&&MP.host&&game) sendStateNow()},3000);
+function safeBoot(){try{const p=new URLSearchParams(location.search); if(p.has("safe")||p.has("reset")||p.has("clear")){Object.keys(localStorage).filter(k=>/yut|room|mp/i.test(k)).forEach(k=>localStorage.removeItem(k)); sessionStorage.clear();}}catch(e){}}
+
+q("goSingle").onclick=()=>setPanel("single"); q("goMulti").onclick=()=>setPanel("multi"); document.querySelectorAll("[data-back]").forEach(b=>b.onclick=()=>setPanel("landing")); modeButtons("single",q("singleModes")); modeButtons("multi",q("multiModes"));
+q("singleStart").onclick=()=>{MP.connected=false;MP.host=false;startGame(false)}; q("createRoom").onclick=()=>mpConnect(true); q("joinRoom").onclick=()=>mpConnect(false); q("multiStart").onclick=()=>{if(!MP.connected){mpSetStatus("먼저 방 만들기/참가");return} if(!game) startGame(true); else sendStateNow()};
+q("rollBtn").onclick=handleRoll; q("autoBtn").onclick=autoProceed; q("exitBtn").onclick=showMenu; q("chatFab").onclick=openChat; q("chatClose").onclick=closeChat; q("chatBackdrop").onclick=closeChat; q("chatForm").onsubmit=e=>{e.preventDefault(); const text=q("chatInput").value.trim(); if(!text)return; q("chatInput").value=""; playerChat(MP.name||currentNick(),text,false); if(MP.connected&&MP.ws?.readyState===WebSocket.OPEN){try{MP.ws.send(JSON.stringify({type:"chat",room:MP.room,name:MP.name||currentNick(),clientId:MP.clientId,text}))}catch(_){}}};
+safeBoot();
+addEventListener("resize",()=>renderAll());
+setPanel("landing");
+</script>
+</body>
+</html>
